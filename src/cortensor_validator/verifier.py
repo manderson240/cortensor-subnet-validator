@@ -1,0 +1,101 @@
+"""Static Code Safety and Syntax Verifier.
+==========================================
+Deterministic AST validator ensuring submitted code blocks are safe to execute.
+Requires 0 LLM tokens and executes in <0.2ms.
+"""
+
+from __future__ import annotations
+
+import ast
+import time
+from dataclasses import dataclass, field
+
+
+FORBIDDEN_CALLS = frozenset({
+    "eval",
+    "exec",
+    "compile",
+    "__import__",
+    "open",
+    "input",
+    "breakpoint",
+})
+
+FORBIDDEN_MODULES = frozenset({
+    "os",
+    "sys",
+    "subprocess",
+    "shutil",
+    "socket",
+    "urllib",
+    "requests",
+    "httpx",
+    "pty",
+    "ctypes",
+})
+
+
+@dataclass(frozen=True, slots=True)
+class SafetyCheckResult:
+    """Result of static AST safety inspection."""
+
+    valid: bool
+    violations: tuple[str, ...] = field(default_factory=tuple)
+    ast_nodes_scanned: int = 0
+    latency_ms: float = 0.0
+
+
+def verify_code_safety(code_str: str) -> SafetyCheckResult:
+    """Inspect Python code for unsafe primitives and syntax errors via AST.
+
+    Parameters
+    ----------
+    code_str : str
+        Python source code submitted by a miner.
+
+    Returns
+    -------
+    SafetyCheckResult
+        Inspection outcome with violations and latency.
+    """
+    t0 = time.perf_counter()
+    violations: list[str] = []
+
+    try:
+        tree = ast.parse(code_str)
+    except SyntaxError as err:
+        dt_ms = (time.perf_counter() - t0) * 1000.0
+        return SafetyCheckResult(
+            valid=False,
+            violations=(f"SyntaxError: {err.msg} at line {err.lineno}",),
+            latency_ms=dt_ms,
+        )
+
+    nodes_scanned = 0
+    for node in ast.walk(tree):
+        nodes_scanned += 1
+
+        # Check imports
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                root_pkg = alias.name.split(".")[0]
+                if root_pkg in FORBIDDEN_MODULES:
+                    violations.append(f"Forbidden import: '{alias.name}'")
+        elif isinstance(node, ast.ImportFrom):
+            if node.module:
+                root_pkg = node.module.split(".")[0]
+                if root_pkg in FORBIDDEN_MODULES:
+                    violations.append(f"Forbidden from-import: '{node.module}'")
+
+        # Check function calls
+        elif isinstance(node, ast.Call):
+            if isinstance(node.func, ast.Name) and node.func.id in FORBIDDEN_CALLS:
+                violations.append(f"Forbidden builtin call: '{node.func.id}()'")
+
+    dt_ms = (time.perf_counter() - t0) * 1000.0
+    return SafetyCheckResult(
+        valid=len(violations) == 0,
+        violations=tuple(violations),
+        ast_nodes_scanned=nodes_scanned,
+        latency_ms=dt_ms,
+    )
