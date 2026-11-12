@@ -343,42 +343,44 @@ SCENES = [
 ]
 
 HTML_TEMPLATE = """<!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background-color: #030712; width: 100%; height: 100%; margin: 0; padding: 0;">
 <head>
 <meta charset="UTF-8">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
+  html, body {
     width: 2560px;
     height: 1440px;
-    background: radial-gradient(circle at 50% 12%, #182234 0%, #0b0f19 55%, #030712 100%);
+    background-color: #030712 !important;
+    background: radial-gradient(circle at 50% 12%, #182234 0%, #0b0f19 55%, #030712 100%) !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: #f8fafc;
-    padding: 80px 110px;
+    margin: 0;
+    padding: 50px 90px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
   }
-  .header { margin-bottom: 36px; }
+  .header { margin-bottom: 24px; }
   .badge {
     display: inline-block;
-    padding: 10px 24px;
+    padding: 8px 20px;
     background: rgba(56, 189, 248, 0.15);
     border: 1px solid rgba(56, 189, 248, 0.4);
     border-radius: 9999px;
     color: #38bdf8;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
   }
-  h1 { font-size: 68px; font-weight: 800; color: #ffffff; margin-bottom: 14px; letter-spacing: -1.5px; }
-  .subtitle { font-size: 28px; color: #94a3b8; font-weight: 400; max-width: 2000px; line-height: 1.4; }
+  h1 { font-size: 60px; font-weight: 800; color: #ffffff; margin-bottom: 10px; letter-spacing: -1.5px; }
+  .subtitle { font-size: 26px; color: #94a3b8; font-weight: 400; max-width: 2000px; line-height: 1.4; }
   
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 48px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; }
 
   .flow-container {
     display: flex;
@@ -386,34 +388,34 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     justify-content: space-between;
     background: rgba(30, 41, 59, 0.45);
     border: 1px solid rgba(148, 163, 184, 0.2);
-    border-radius: 24px;
-    padding: 32px 50px;
+    border-radius: 20px;
+    padding: 24px 40px;
   }
   .flow-step {
     flex: 1;
     background: #0d1322;
     border: 1px solid #334155;
-    border-radius: 18px;
-    padding: 28px;
+    border-radius: 16px;
+    padding: 22px;
     text-align: center;
   }
   .flow-step.highlight {
     border-color: #38bdf8;
     background: rgba(56, 189, 248, 0.12);
   }
-  .flow-num { font-size: 26px; font-weight: 900; color: #38bdf8; margin-bottom: 8px; }
-  .flow-step h4 { font-size: 28px; color: #f8fafc; margin-bottom: 8px; }
-  .flow-step p { font-size: 20px; color: #94a3b8; margin-bottom: 16px; line-height: 1.4; }
-  .flow-arrow { font-size: 40px; color: #64748b; padding: 0 28px; font-weight: bold; }
-  .chip { display: inline-block; padding: 6px 16px; background: #1e293b; border-radius: 8px; font-size: 18px; font-weight: 600; color: #cbd5e1; }
+  .flow-num { font-size: 24px; font-weight: 900; color: #38bdf8; margin-bottom: 6px; }
+  .flow-step h4 { font-size: 26px; color: #f8fafc; margin-bottom: 6px; }
+  .flow-step p { font-size: 18px; color: #94a3b8; margin-bottom: 12px; line-height: 1.4; }
+  .flow-arrow { font-size: 36px; color: #64748b; padding: 0 24px; font-weight: bold; }
+  .chip { display: inline-block; padding: 6px 16px; background: #1e293b; border-radius: 8px; font-size: 16px; font-weight: 600; color: #cbd5e1; }
   .chip-blue { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
   .chip-green { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4); }
 
   .card {
     background: rgba(30, 41, 59, 0.65);
     border: 1px solid rgba(148, 163, 184, 0.2);
-    border-radius: 24px;
-    padding: 40px;
+    border-radius: 20px;
+    padding: 32px;
     backdrop-filter: blur(20px);
   }
   .card.danger {
@@ -424,23 +426,23 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     background: rgba(34, 197, 94, 0.08);
     border-color: rgba(34, 197, 94, 0.35);
   }
-  .card-icon { font-size: 48px; margin-bottom: 16px; }
-  .card h3 { font-size: 34px; color: #f1f5f9; margin-bottom: 16px; font-weight: 700; }
-  .card p { font-size: 22px; color: #cbd5e1; line-height: 1.5; margin-bottom: 20px; }
+  .card-icon { font-size: 42px; margin-bottom: 12px; }
+  .card h3 { font-size: 30px; color: #f1f5f9; margin-bottom: 12px; font-weight: 700; }
+  .card p { font-size: 20px; color: #cbd5e1; line-height: 1.5; margin-bottom: 16px; }
   .card ul { list-style: none; }
-  .card ul li { font-size: 22px; color: #cbd5e1; line-height: 2.1; }
+  .card ul li { font-size: 20px; color: #cbd5e1; line-height: 2.0; }
   .card ul li strong { color: #ffffff; }
 
   .code-split {
     display: grid;
     grid-template-columns: 1.25fr 1fr;
-    gap: 48px;
-    height: 820px;
+    gap: 40px;
+    height: 720px;
   }
   .code-box {
     background: #0a0e17;
     border: 1px solid #1e293b;
-    border-radius: 20px;
+    border-radius: 18px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -453,21 +455,21 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   /* Authentic Linux Header Bar */
   .linux-bar {
     background: #181f30;
-    padding: 16px 28px;
+    padding: 14px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #222d42;
   }
   .linux-title {
-    font-size: 22px;
+    font-size: 20px;
     color: #e2e8f0;
     font-family: "JetBrains Mono", monospace;
     font-weight: 600;
   }
   .linux-tab {
     background: #0a0e17;
-    padding: 6px 18px;
+    padding: 6px 16px;
     border-radius: 8px 8px 0 0;
     border: 1px solid #222d42;
     border-bottom: none;
@@ -475,7 +477,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   }
   .linux-tab-danger {
     background: #0a0e17;
-    padding: 6px 18px;
+    padding: 6px 16px;
     border-radius: 8px 8px 0 0;
     border: 1px solid rgba(239, 68, 68, 0.4);
     border-bottom: none;
@@ -483,8 +485,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   }
   .linux-controls {
     display: flex;
-    gap: 20px;
-    font-size: 22px;
+    gap: 18px;
+    font-size: 20px;
     color: #94a3b8;
     font-family: monospace;
     font-weight: bold;
@@ -496,10 +498,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   }
 
   pre {
-    padding: 32px 36px;
+    padding: 24px 30px;
     font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
-    font-size: 25px;
-    line-height: 1.65;
+    font-size: 24px;
+    line-height: 1.6;
     color: #e2e8f0;
     overflow-y: auto;
     flex: 1;
@@ -512,16 +514,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   .comment { color: #94a3b8; font-style: italic; }
 
   .eval-flow {
-    padding: 20px 28px;
+    padding: 16px 24px;
     background: #0e1526;
     border-top: 1px solid #1e293b;
     display: flex;
-    gap: 16px;
+    gap: 14px;
   }
   .flow-pill {
-    padding: 8px 18px;
+    padding: 6px 16px;
     border-radius: 8px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
   }
   .flow-pill.pass { background: rgba(34, 197, 94, 0.18); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.35); }
@@ -535,15 +537,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   .lifecycle-step {
     display: flex;
     align-items: flex-start;
-    gap: 24px;
+    gap: 20px;
     background: #0d1322;
     border: 1px solid #334155;
-    border-radius: 16px;
-    padding: 26px;
+    border-radius: 14px;
+    padding: 22px;
   }
   .step-badge {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     background: #38bdf8;
     color: #0b0f19;
     font-weight: 900;
@@ -551,26 +553,26 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 22px;
     flex-shrink: 0;
   }
-  .lifecycle-step strong { font-size: 26px; color: #ffffff; display: block; margin-bottom: 8px; }
-  .lifecycle-step p { font-size: 20px; color: #94a3b8; line-height: 1.45; margin: 0; }
+  .lifecycle-step strong { font-size: 24px; color: #ffffff; display: block; margin-bottom: 6px; }
+  .lifecycle-step p { font-size: 18px; color: #94a3b8; line-height: 1.45; margin: 0; }
 
   .terminal-mini {
     background: #0a0e17;
     border: 1px solid #1e293b;
-    border-radius: 20px;
+    border-radius: 18px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
   }
   .term-lines {
-    padding: 32px 36px;
+    padding: 24px 30px;
     font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
-    font-size: 24px;
-    line-height: 1.9;
+    font-size: 23px;
+    line-height: 1.85;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -582,51 +584,51 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   .t-yellow { color: #fbbf24; font-weight: bold; }
   .t-green { color: #22c55e; font-weight: bold; }
   .t-red { color: #ef4444; font-weight: bold; }
-  .t-indent { padding-left: 32px; }
+  .t-indent { padding-left: 28px; }
   .t-banner-pass {
-    margin-top: 20px;
-    padding: 16px 24px;
+    margin-top: 14px;
+    padding: 12px 20px;
     background: rgba(34, 197, 94, 0.18);
     border: 1px solid rgba(34, 197, 94, 0.45);
-    border-radius: 12px;
+    border-radius: 10px;
     color: #22c55e;
     font-weight: 800;
-    font-size: 24px;
+    font-size: 22px;
     text-align: center;
   }
   .t-banner-fail {
-    margin-top: 20px;
-    padding: 16px 24px;
+    margin-top: 14px;
+    padding: 12px 20px;
     background: rgba(239, 68, 68, 0.18);
     border: 1px solid rgba(239, 68, 68, 0.45);
-    border-radius: 12px;
+    border-radius: 10px;
     color: #ef4444;
     font-weight: 800;
-    font-size: 24px;
+    font-size: 22px;
     text-align: center;
   }
 
   .terminal-window {
     background: #0a0e17;
     border: 1px solid #1e293b;
-    border-radius: 20px;
+    border-radius: 18px;
     box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
     overflow: hidden;
   }
-  .terminal-content { padding: 40px; font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 25px; line-height: 1.9; }
-  .cmd { color: #f8fafc; font-weight: bold; margin-bottom: 16px; }
+  .terminal-content { padding: 32px 36px; font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 23px; line-height: 1.85; }
+  .cmd { color: #f8fafc; font-weight: bold; margin-bottom: 14px; }
   .dim { color: #64748b; }
   .pass { color: #22c55e; font-weight: bold; }
-  .success-banner { color: #22c55e; font-weight: bold; margin-top: 28px; font-size: 28px; }
+  .success-banner { color: #22c55e; font-weight: bold; margin-top: 22px; font-size: 26px; }
 
   .code-pill {
     display: inline-block;
-    padding: 10px 22px;
+    padding: 8px 18px;
     background: #030712;
     border: 1px solid #334155;
-    border-radius: 10px;
+    border-radius: 8px;
     font-family: "JetBrains Mono", monospace;
-    font-size: 22px;
+    font-size: 20px;
     color: #38bdf8;
   }
 
@@ -635,8 +637,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     justify-content: space-between;
     align-items: center;
     border-top: 1px solid rgba(148, 163, 184, 0.2);
-    padding-top: 24px;
-    font-size: 22px;
+    padding-top: 18px;
+    font-size: 20px;
     color: #64748b;
   }
   .footer-brand { font-weight: bold; color: #94a3b8; }
@@ -714,6 +716,8 @@ def build_scene(scene: dict[str, str], work_dir: Path) -> Path:
         "google-chrome",
         "--headless",
         "--disable-gpu",
+        "--hide-scrollbars",
+        "--default-background-color=000000",
         f"--screenshot={png_path}",
         f"--window-size={WIDTH},{HEIGHT}",
         str(html_path),
