@@ -85,8 +85,8 @@ Publish a lightweight, headless `openminion-core` package containing only the `A
 
 The working OpenMinion 0.1 implementation is fully verified in our open-source repository:
 - **1-Command Entrypoint**: `uv run sentinel` (completes in <20ms, verifying valid and malicious miner code tasks).
-- **Validator Agent**: [`src/cortensor_validator/openminion_agent.py`](file:///home/mike-anderson/dev/cortensor-subnet-validator/src/cortensor_validator/openminion_agent.py)
-- **Sentinel Runner**: [`src/cortensor_validator/sentinel.py`](file:///home/mike-anderson/dev/cortensor-subnet-validator/src/cortensor_validator/sentinel.py)
-- **Unit Test Suite**: [`tests/test_validator.py`](file:///home/mike-anderson/dev/cortensor-subnet-validator/tests/test_validator.py) (9/9 tests passing in <0.5s)
+- **Validator Agent**: [`src/cortensor_validator/openminion_agent.py`](../src/cortensor_validator/openminion_agent.py)
+- **Sentinel Runner**: [`src/cortensor_validator/sentinel.py`](../src/cortensor_validator/sentinel.py)
+- **Unit Test Suite**: [`tests/test_validator.py`](../tests/test_validator.py) (11/11 tests passing in <1.5s)
 - **Hackathon Bonus Bug Report**: [OpenMinion Issue #733](https://github.com/openminion/openminion/issues/733)
 - **Hackathon Bonus Fix PR**: [OpenMinion PR #734](https://github.com/openminion/openminion/pull/734)

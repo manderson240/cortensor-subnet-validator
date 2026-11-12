@@ -1,19 +1,20 @@
 """Cortensor Sentinel CLI Entrypoint.
 ==================================
-Simple, reliable 1-command task verification agent for Cortensor Hackathon #5.
+Simple, reliable 1-command task verification agent for Cortensor Subnet nodes.
 
-Demonstrates:
-  1. OpenMinion 0.1 SDK Agent with custom @tool decorators.
-  2. Static AST safety inspection (0 LLM tokens, <0.2ms).
-  3. Safe test case execution.
-  4. Cryptographic HMAC-SHA256 attestation signing.
+Supports:
+  1. Automated dual test demo (Honest + Adversarial proposals)
+  2. Dynamic file-based verification via CLI flags
+  3. Environment-driven configuration (CORTENSOR_VALIDATOR_ID, CORTENSOR_EPOCH)
 """
 
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 import time
+from pathlib import Path
 
 from cortensor_validator.openminion_agent import CortensorSentinel
 
@@ -21,6 +22,7 @@ from cortensor_validator.openminion_agent import CortensorSentinel
 def run_demo(verbose: bool = True) -> int:
     """Run a deterministic Sentinel verification cycle."""
     t0 = time.perf_counter()
+    validator_id = os.getenv("CORTENSOR_VALIDATOR_ID", "val-cortensor-node-01")
 
     if verbose:
         print("=" * 68)
@@ -28,7 +30,7 @@ def run_demo(verbose: bool = True) -> int:
         print("  DoraHacks Hackathon #5 — Subnet Task Verification Agent")
         print("=" * 68)
 
-    sentinel = CortensorSentinel(validator_id="val-cortensor-node-01")
+    sentinel = CortensorSentinel(validator_id=validator_id)
     agent = sentinel.create_agent()
 
     if verbose:
@@ -102,11 +104,55 @@ def run_demo(verbose: bool = True) -> int:
     return 0
 
 
+def verify_file(
+    code_path: Path,
+    task_id: str,
+    test_input: int,
+    expected_output: int,
+    verbose: bool = True,
+) -> int:
+    """Verify a miner code submission loaded dynamically from a file."""
+    if not code_path.exists():
+        print(f"Error: File '{code_path}' does not exist.", file=sys.stderr)
+        return 1
+
+    code = code_path.read_text(encoding="utf-8")
+    sentinel = CortensorSentinel()
+    passed, receipt = sentinel.verify_submission(
+        task_id=task_id,
+        code=code,
+        test_input=test_input,
+        expected_output=expected_output,
+    )
+
+    if verbose:
+        status_str = "CERTIFIED" if passed else "REJECTED"
+        print(f"Task: {task_id} | Status: {status_str} | Sig: {receipt.signature[:24]}...")
+
+    return 0 if passed else 2
+
+
 def main() -> None:
     """CLI entrypoint."""
-    parser = argparse.ArgumentParser(description="Cortensor Task Sentinel")
+    parser = argparse.ArgumentParser(description="Cortensor Subnet Task Sentinel")
+    parser.add_argument("--code-file", type=Path, default=None, help="Path to code submission")
+    parser.add_argument("--task-id", type=str, default="task-custom-01", help="Task identifier")
+    parser.add_argument("--input", type=int, default=10, help="Test input integer")
+    parser.add_argument("--expected", type=int, default=55, help="Expected output integer")
     parser.add_argument("--quiet", action="store_true", help="Quiet mode")
     args = parser.parse_args()
+
+    if args.code_file is not None:
+        sys.exit(
+            verify_file(
+                code_path=args.code_file,
+                task_id=args.task_id,
+                test_input=args.input,
+                expected_output=args.expected,
+                verbose=not args.quiet,
+            )
+        )
+
     sys.exit(run_demo(verbose=not args.quiet))
 
 

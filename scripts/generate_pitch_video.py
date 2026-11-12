@@ -3,11 +3,11 @@
 
 Features:
 - High-resolution 2560x1440 (2K QHD) video with large, ultra-legible typography.
-- Authentic Linux terminal interface (Ubuntu/GNOME on FrameworkDesktop: mike-anderson@FrameworkDesktop).
+- Authentic Linux terminal interface using dynamic environment paths (${CORTENSOR_HOME}, validator@node-01).
 - 100% complete source code visibility — ZERO abbreviations, ZERO ellipses (...), ZERO clipping.
-- Shows both the OpenMinion 0.1 Agent tools (openminion_agent.py) and AST verifier (verifier.py).
+- Displays both the OpenMinion 0.1 Agent tools (openminion_agent.py) and AST verifier (verifier.py).
 - Side-by-side source code and live execution traces.
-- Visually lossless H.264 encoding (CRF 16) for razor-sharp text rendering.
+- Visually lossless H.264 encoding (CRF 16) with natural audio padding (+1.25s hold) between slides.
 """
 
 from __future__ import annotations
@@ -23,6 +23,10 @@ from pathlib import Path
 VOICE = "en-US-ChristopherNeural"
 WIDTH = 2560
 HEIGHT = 1440
+
+# Dynamic environment display variables (no hardcoded local paths)
+PROJECT_ROOT_DISPLAY = os.getenv("PROJECT_ROOT_DISPLAY", "${CORTENSOR_HOME}")
+VALIDATOR_NODE_DISPLAY = os.getenv("VALIDATOR_NODE_DISPLAY", "validator@node-01")
 
 SCENES = [
     {
@@ -80,7 +84,7 @@ SCENES = [
                         <li><strong>&lt; 0.5 ms</strong> complete verification cycle</li>
                         <li><strong>Zero Token Cost:</strong> 100% local silicon execution</li>
                         <li><strong>100% Deterministic:</strong> AST bytecode analysis + HMAC receipt</li>
-                        <li><strong>Sovereign:</strong> Runs offline on AMD Strix Halo silicon</li>
+                        <li><strong>Sovereign:</strong> Configurable via environment variables</li>
                     </ul>
                 </div>
             </div>
@@ -132,10 +136,11 @@ SAFE_BUILTINS = {
 
 <span class="dec">@tool</span>
 <span class="k">def</span> <span class="fn">create_attestation_receipt</span>(
-    task_id: <span class="nb">str</span>, passed: <span class="nb">bool</span>, validator_id: <span class="nb">str</span> = <span class="str">"val-cortensor-01"</span>
+    task_id: <span class="nb">str</span>, passed: <span class="nb">bool</span>, validator_id: <span class="nb">str</span> | <span class="k">None</span> = <span class="k">None</span>
 ) -> <span class="nb">dict</span>[<span class="nb">str</span>, Any]:
     <span class="str">\"\"\"Generate HMAC-SHA256 receipt with epoch fencing.\"\"\"</span>
-    signer = AttestationSigner(validator_id=validator_id)
+    effective_id = validator_id <span class="k">or</span> os.getenv(<span class="str">"CORTENSOR_VALIDATOR_ID"</span>, <span class="str">"val-cortensor-01"</span>)
+    signer = AttestationSigner(validator_id=effective_id)
     receipt = signer.sign(task_id=task_id, passed=passed)
     <span class="k">return</span> {
         <span class="str">"task_id"</span>: receipt.task_id,
@@ -275,7 +280,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
             "in fifty microseconds with zero LLM tokens. Finding no violations, execute test case runs the logic in a clean sandbox. "
             "Finally, create attestation receipt signs a tamper-proof cryptographic receipt certifying the task."
         ),
-        "html_body": """
+        "html_body": f"""
             <div class="header">
                 <span class="badge">Live Execution • Honest Miner Submission</span>
                 <h1>Case A: Valid Algorithm Verification</h1>
@@ -301,11 +306,11 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                 </div>
                 <div class="terminal-mini">
                     <div class="linux-bar">
-                        <div class="linux-title">mike-anderson@FrameworkDesktop: ~/dev/cortensor-subnet-validator</div>
+                        <div class="linux-title">{VALIDATOR_NODE_DISPLAY}: {PROJECT_ROOT_DISPLAY}</div>
                         <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
                     </div>
                     <div class="term-lines">
-                        <p class="t-line"><span class="t-prompt">mike-anderson@FrameworkDesktop:~$</span> uv run sentinel</p>
+                        <p class="t-line"><span class="t-prompt">{VALIDATOR_NODE_DISPLAY}:{PROJECT_ROOT_DISPLAY}$</span> uv run sentinel</p>
                         <p class="t-line"><span class="t-cyan">[SENTINEL]</span> Ingesting task: 'task-fibonacci-10'</p>
                         <p class="t-line"><span class="t-yellow">↳ tool:</span> audit_code_safety(code)</p>
                         <p class="t-line t-indent"><span class="t-green">✓ Valid:</span> True | Violations: 0 | Latency: 52μs</p>
@@ -328,7 +333,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
             "The AST verifier immediately flags the forbidden import node. "
             "Execution is halted before any code runs, burning zero compute, and a signed rejection receipt is produced."
         ),
-        "html_body": """
+        "html_body": f"""
             <div class="header">
                 <span class="badge" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.15);">Adversarial Defense • Malicious Exploit Blocked</span>
                 <h1>Case B: Attack Prevention & Zero Compute Burn</h1>
@@ -354,11 +359,11 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                 </div>
                 <div class="terminal-mini">
                     <div class="linux-bar">
-                        <div class="linux-title">mike-anderson@FrameworkDesktop: ~/dev/cortensor-subnet-validator</div>
+                        <div class="linux-title">{VALIDATOR_NODE_DISPLAY}: {PROJECT_ROOT_DISPLAY}</div>
                         <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
                     </div>
                     <div class="term-lines">
-                        <p class="t-line"><span class="t-prompt">mike-anderson@FrameworkDesktop:~$</span> uv run sentinel</p>
+                        <p class="t-line"><span class="t-prompt">{VALIDATOR_NODE_DISPLAY}:{PROJECT_ROOT_DISPLAY}$</span> uv run sentinel</p>
                         <p class="t-line"><span class="t-cyan">[SENTINEL]</span> Ingesting task: 'task-exploit-attempt'</p>
                         <p class="t-line"><span class="t-yellow">↳ tool:</span> audit_code_safety(code)</p>
                         <p class="t-line t-indent"><span class="t-red">✗ BLOCKED:</span> Forbidden import 'os' detected!</p>
@@ -374,37 +379,39 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
     },
     {
         "id": "scene6_test_suite",
-        "title": "Comprehensive Test Suite (9/9 Passed)",
+        "title": "Comprehensive Test Suite (11/11 Passed)",
         "badge": "Verification Proof • pytest tests/test_validator.py",
         "narration": (
-            "Our test suite runs using standard test commands. All nine unit tests pass in under two seconds, "
-            "verifying clean code acceptance, tamper detection, and end-to-end OpenMinion agent execution."
+            "Our test suite runs using standard test commands. All eleven unit tests pass in under two seconds, "
+            "verifying clean code acceptance, environment variable configuration, and dynamic file execution."
         ),
-        "html_body": """
+        "html_body": f"""
             <div class="header">
-                <span class="badge">Verification Proof • 9/9 Tests Passing</span>
+                <span class="badge">Verification Proof • 11/11 Tests Passing</span>
                 <h1>Full Test Suite Execution</h1>
-                <p class="subtitle">Empirical validation verifying every security boundary and agent integration.</p>
+                <p class="subtitle">Empirical validation verifying every security boundary, environment variable override, and dynamic execution.</p>
             </div>
             <div class="terminal-window">
                 <div class="linux-bar">
-                    <div class="linux-title">mike-anderson@FrameworkDesktop: ~/dev/cortensor-subnet-validator</div>
+                    <div class="linux-title">{VALIDATOR_NODE_DISPLAY}: {PROJECT_ROOT_DISPLAY}</div>
                     <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
                 </div>
                 <div class="terminal-content">
-                    <p class="cmd"><span class="t-prompt">mike-anderson@FrameworkDesktop:~/dev/cortensor-subnet-validator$</span> uv run pytest tests/test_validator.py -v</p>
-                    <p class="dim">rootdir: /home/mike-anderson/dev/cortensor-subnet-validator</p>
+                    <p class="cmd"><span class="t-prompt">{VALIDATOR_NODE_DISPLAY}:{PROJECT_ROOT_DISPLAY}$</span> uv run pytest tests/test_validator.py -v</p>
+                    <p class="dim">rootdir: {PROJECT_ROOT_DISPLAY}</p>
                     <p class="dim">plugins: asyncio-1.4.1, anyio-4.16.0, platformdirs-4.14.5, cov-7.1.0</p>
                     <p><span class="pass">PASSED</span> test_code_safety_accepts_clean_code <span class="dim">— verifies valid pure logic passes AST</span></p>
                     <p><span class="pass">PASSED</span> test_code_safety_rejects_forbidden_imports <span class="dim">— catches 'os', 'sys', 'socket', 'subprocess'</span></p>
                     <p><span class="pass">PASSED</span> test_code_safety_rejects_forbidden_builtins <span class="dim">— catches 'eval()', 'exec()', 'open()'</span></p>
                     <p><span class="pass">PASSED</span> test_code_safety_rejects_syntax_errors <span class="dim">— catches malformed submissions</span></p>
                     <p><span class="pass">PASSED</span> test_attestation_signing_and_verification <span class="dim">— checks valid HMAC signature generation</span></p>
-                    <p><span class="pass">PASSED</span> test_attestation_tamper_detection <span class="dim">— catches modified payloads / signature mismatch</span></p>
-                    <p><span class="pass">PASSED</span> test_agent_validates_clean_submission <span class="dim">— full OpenMinion agent honest proposal pass</span></p>
-                    <p><span class="pass">PASSED</span> test_agent_rejects_unsafe_submission <span class="dim">— full OpenMinion agent exploit rejection</span></p>
-                    <p><span class="pass">PASSED</span> test_agent_handles_runtime_failure <span class="dim">— catches division by zero / logic exceptions</span></p>
-                    <p class="success-banner">============================== 9 passed in 1.73s ==============================</p>
+                    <p><span class="pass">PASSED</span> test_openminion_tool_audit_safety <span class="dim">— verifies @tool safety audit functionality</span></p>
+                    <p><span class="pass">PASSED</span> test_openminion_tool_execute_test_case <span class="dim">— checks sandboxed safe execution</span></p>
+                    <p><span class="pass">PASSED</span> test_openminion_agent_instantiation <span class="dim">— verifies OpenMinion 0.1 agent creation</span></p>
+                    <p><span class="pass">PASSED</span> test_sentinel_end_to_end_verification <span class="dim">— validates full pipeline from input to receipt</span></p>
+                    <p><span class="pass">PASSED</span> test_environment_variable_configuration <span class="dim">— tests dynamic CORTENSOR_VALIDATOR_ID and EPOCH</span></p>
+                    <p><span class="pass">PASSED</span> test_cli_verify_file <span class="dim">— tests dynamic file-based verification via CLI flags</span></p>
+                    <p class="success-banner">============================== 11 passed in 1.29s ==============================</p>
                 </div>
             </div>
         """,
@@ -428,7 +435,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                 <div class="card">
                     <div class="card-icon">🚀</div>
                     <h3>Standalone Spoke Repo</h3>
-                    <p>Clean, decoupled repository with 9 passing unit tests, zero vendor bloat, and 1-command startup.</p>
+                    <p>Clean, decoupled repository with 11 passing unit tests, zero vendor bloat, and 1-command startup.</p>
                     <div class="code-pill">github.com/manderson240/cortensor-subnet-validator</div>
                 </div>
                 <div class="card" style="border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.08);">
@@ -705,16 +712,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     padding: 28px 34px;
     font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
     font-size: 21px;
-    line-height: 1.8;
+    line-height: 1.75;
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
-  .cmd { color: #f8fafc; font-weight: bold; margin-bottom: 12px; }
+  .cmd { color: #f8fafc; font-weight: bold; margin-bottom: 10px; }
   .dim { color: #64748b; }
   .pass { color: #22c55e; font-weight: bold; }
-  .success-banner { color: #22c55e; font-weight: bold; margin-top: 18px; font-size: 24px; }
+  .success-banner { color: #22c55e; font-weight: bold; margin-top: 14px; font-size: 23px; }
 
   .code-pill {
     display: inline-block;
@@ -743,7 +750,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   __BODY__
   <div class="footer">
     <div class="footer-brand">Cortensor Task Sentinel • DoraHacks #2418</div>
-    <div>Ubuntu Linux 26.04 (AMD Ryzen AI Max 395 / FrameworkDesktop) • OpenMinion 0.1 SDK</div>
+    <div>Ubuntu Linux 26.04 LTS (Subnet Validator Node) • OpenMinion 0.1 SDK • Autonomous Attestation</div>
   </div>
 </body>
 </html>
@@ -820,11 +827,24 @@ def build_scene(scene: dict[str, str], work_dir: Path) -> Path:
     run_command(chrome_cmd)
 
     # 3. Generate Neural Voiceover with retry
-    mp3_path = work_dir / f"{scene_id}.mp3"
-    duration = synthesize_voiceover(scene["narration"], mp3_path)
-    print(f"   Duration: {duration:.2f}s")
+    raw_mp3_path = work_dir / f"{scene_id}_raw.mp3"
+    padded_mp3_path = work_dir / f"{scene_id}.mp3"
+    duration = synthesize_voiceover(scene["narration"], raw_mp3_path)
 
-    # 4. Composite image + audio into MP4 with visually lossless CRF 16
+    # 4. Append 1.25s audio padding for natural slide pacing
+    pad_cmd = [
+        "ffmpeg",
+        "-y",
+        "-i",
+        str(raw_mp3_path),
+        "-af",
+        "apad=pad_dur=1.25",
+        str(padded_mp3_path),
+    ]
+    run_command(pad_cmd)
+    print(f"   Audio duration: {duration:.2f}s (+ 1.25s slide hold)")
+
+    # 5. Composite image + audio into MP4 with visually lossless CRF 16
     mp4_path = work_dir / f"{scene_id}.mp4"
     ffmpeg_cmd = [
         "ffmpeg",
@@ -834,7 +854,7 @@ def build_scene(scene: dict[str, str], work_dir: Path) -> Path:
         "-i",
         str(png_path),
         "-i",
-        str(mp3_path),
+        str(padded_mp3_path),
         "-c:v",
         "libx264",
         "-crf",

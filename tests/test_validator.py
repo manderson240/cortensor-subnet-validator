@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import os
+import tempfile
+from pathlib import Path
+
 from cortensor_validator.attestation import AttestationSigner
 from cortensor_validator.openminion_agent import (
     CortensorSentinel,
@@ -9,6 +13,7 @@ from cortensor_validator.openminion_agent import (
     create_attestation_receipt,
     execute_test_case,
 )
+from cortensor_validator.sentinel import verify_file
 from cortensor_validator.verifier import verify_code_safety
 
 
@@ -89,3 +94,34 @@ def test_sentinel_end_to_end_verification() -> None:
     assert passed is True
     assert receipt.passed is True
     assert sentinel.signer.verify(receipt) is True
+
+
+def test_environment_variable_configuration(monkeypatch) -> None:
+    monkeypatch.setenv("CORTENSOR_VALIDATOR_ID", "val-env-override-99")
+    monkeypatch.setenv("CORTENSOR_EPOCH", "42")
+
+    signer = AttestationSigner()
+    assert signer.validator_id == "val-env-override-99"
+    assert signer.current_epoch == 42
+
+    sentinel = CortensorSentinel()
+    assert sentinel.validator_id == "val-env-override-99"
+    assert sentinel.epoch == 42
+
+
+def test_cli_verify_file() -> None:
+    with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as tmp:
+        tmp.write("def solution(n: int) -> int:\n    return n + 10\n")
+        tmp_path = Path(tmp.name)
+
+    try:
+        ret = verify_file(
+            code_path=tmp_path,
+            task_id="test-file-task",
+            test_input=5,
+            expected_output=15,
+            verbose=False,
+        )
+        assert ret == 0
+    finally:
+        tmp_path.unlink(missing_ok=True)

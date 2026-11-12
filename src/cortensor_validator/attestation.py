@@ -1,12 +1,14 @@
 """Cryptographic Attestation Receipts for Subnet Verification.
 =============================================================
 Signs verification results using HMAC-SHA256 with epoch fencing and timestamps.
+Configurable via environment variables or explicit parameters.
 """
 
 from __future__ import annotations
 
 import hashlib
 import hmac
+import os
 import time
 from dataclasses import dataclass
 
@@ -28,13 +30,17 @@ class AttestationSigner:
 
     def __init__(
         self,
-        validator_id: str = "val-cortensor-01",
-        secret_key: bytes = b"cortensor_subnet_secret_key_2026",
-        current_epoch: int = 1,
+        validator_id: str | None = None,
+        secret_key: bytes | None = None,
+        current_epoch: int | None = None,
     ) -> None:
-        self.validator_id = validator_id
-        self.secret_key = secret_key
-        self.current_epoch = current_epoch
+        self.validator_id = validator_id or os.getenv("CORTENSOR_VALIDATOR_ID", "val-cortensor-01")
+        self.secret_key = secret_key or os.getenv("CORTENSOR_SECRET_KEY", "cortensor_subnet_secret_key_2026").encode()
+        self.current_epoch = (
+            current_epoch
+            if current_epoch is not None
+            else int(os.getenv("CORTENSOR_EPOCH", "1"))
+        )
 
     def sign(
         self,

@@ -17,8 +17,11 @@ cd cortensor-subnet-validator
 # 2. Sync dependencies
 uv sync
 
-# 3. Run the Sentinel agent
+# 3. Run the Sentinel agent demo
 uv run sentinel
+
+# 4. Or verify a custom code proposal file dynamically
+uv run sentinel --code-file path/to/proposal.py --task-id task-custom-01 --input 10 --expected 55
 ```
 
 ### Verified Output
@@ -67,18 +70,35 @@ In decentralized AI subnets (e.g. Cortensor), miners submit compute proposals an
 
 ---
 
+## ⚙️ Dynamic Configuration
+
+All node parameters are configurable via standard environment variables:
+
+| Variable | Description | Default |
+|---|---|---|
+| `CORTENSOR_VALIDATOR_ID` | Validator node identifier | `val-cortensor-01` |
+| `CORTENSOR_EPOCH` | Current consensus epoch | `1` |
+| `CORTENSOR_SECRET_KEY` | HMAC signing secret key | `cortensor_subnet_secret_key_2026` |
+
+---
+
 ## 🧪 Testing
 
 ```bash
 uv run pytest
 ```
-All 9 unit tests pass in $<1$ second with zero network or paid API requirements.
+All 11 unit tests pass in $<1.5$ seconds with zero network or paid API requirements:
+- AST code safety (clean code pass, forbidden import block, forbidden builtin block, syntax errors)
+- Cryptographic attestation signing and tamper detection
+- OpenMinion `@tool` registration and Agent execution
+- Dynamic environment variable configuration overrides
+- Dynamic file verification via CLI
 
 ---
 
 ## 🏆 Hackathon Deliverables
 
-- **Automated 1080p Pitch Video**: [`docs/cortensor_pitch_demo.mp4`](docs/cortensor_pitch_demo.mp4) (Full 85s demonstration generated headlessly via `python3 scripts/generate_pitch_video.py`)
+- **Automated 1440p QHD Pitch Video**: [`docs/cortensor_pitch_demo.mp4`](docs/cortensor_pitch_demo.mp4) (Full 165s demonstration with complete, unclipped source code generated headlessly via `python3 scripts/generate_pitch_video.py`)
 - **OpenMinion Feedback Report (25% Rubric)**: [`docs/cortensor_openminion_feedback_report.md`](docs/cortensor_openminion_feedback_report.md)
 - **Bonus Bug Report**: [OpenMinion Issue #733](https://github.com/openminion/openminion/issues/733) — *Direct import of openminion.modules.tool.executor fails with circular import on ToolExecutionBatch*
 - **Bonus Fix PR**: [OpenMinion Pull Request #734](https://github.com/openminion/openminion/pull/734) — *fix(tool): defer ToolSpec resolution in executor to break circular import*

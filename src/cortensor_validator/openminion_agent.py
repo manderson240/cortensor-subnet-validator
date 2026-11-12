@@ -6,6 +6,7 @@ OpenMinion 0.1 SDK (`openminion.Agent` and `openminion.tool`).
 
 from __future__ import annotations
 
+import os
 import time
 from typing import Any
 
@@ -114,7 +115,7 @@ def execute_test_case(code: str, test_input: int, expected_output: int) -> dict[
 def create_attestation_receipt(
     task_id: str,
     passed: bool,
-    validator_id: str = "val-cortensor-01",
+    validator_id: str | None = None,
 ) -> dict[str, Any]:
     """Generate an HMAC-SHA256 cryptographic attestation receipt for a task outcome.
 
@@ -124,15 +125,16 @@ def create_attestation_receipt(
         Subnet task identifier.
     passed : bool
         Whether the task verification passed.
-    validator_id : str
-        Validator node identifier.
+    validator_id : str, optional
+        Validator node identifier (defaults to CORTENSOR_VALIDATOR_ID env var).
 
     Returns
     -------
     dict[str, Any]
         Signed attestation receipt data.
     """
-    signer = AttestationSigner(validator_id=validator_id)
+    effective_id = validator_id or os.getenv("CORTENSOR_VALIDATOR_ID", "val-cortensor-01")
+    signer = AttestationSigner(validator_id=effective_id)
     receipt = signer.sign(task_id=task_id, passed=passed)
     return {
         "task_id": receipt.task_id,
@@ -152,10 +154,14 @@ def create_attestation_receipt(
 class CortensorSentinel:
     """Manages OpenMinion-powered task verification for Cortensor Subnet nodes."""
 
-    def __init__(self, validator_id: str = "val-cortensor-01", epoch: int = 1) -> None:
-        self.validator_id = validator_id
-        self.epoch = epoch
-        self.signer = AttestationSigner(validator_id=validator_id, current_epoch=epoch)
+    def __init__(
+        self,
+        validator_id: str | None = None,
+        epoch: int | None = None,
+    ) -> None:
+        self.validator_id = validator_id or os.getenv("CORTENSOR_VALIDATOR_ID", "val-cortensor-01")
+        self.epoch = epoch if epoch is not None else int(os.getenv("CORTENSOR_EPOCH", "1"))
+        self.signer = AttestationSigner(validator_id=self.validator_id, current_epoch=self.epoch)
 
     def create_agent(self, model: str | None = None) -> Agent:
         """Create an official OpenMinion Agent equipped with verification tools."""
