@@ -20,7 +20,7 @@ from pathlib import Path
 from cortensor_validator.openminion_agent import CortensorSentinel
 
 
-def run_demo(verbose: bool = True) -> int:
+def run_demo(verbose: bool = True, use_hosted: bool = False) -> int:
     """Run a deterministic Sentinel verification cycle."""
     t0 = time.perf_counter()
     validator_id = os.getenv("CORTENSOR_VALIDATOR_ID", "val-cortensor-node-01")
@@ -38,6 +38,8 @@ def run_demo(verbose: bool = True) -> int:
         print(f"\n[1] Initialized OpenMinion Agent: '{agent.name}'")
         print(f"    - Tools registered: {', '.join(agent.tools)}")
         print(f"    - Session ID: {agent.session_id}")
+        if use_hosted:
+            print("    - Mode: Hosted Portal Verification enabled (with auto-fallback)")
 
     # Case A: Honest Miner Submission
     honest_task_id = "task-fibonacci-10"
@@ -59,11 +61,12 @@ def run_demo(verbose: bool = True) -> int:
         code=honest_code,
         test_input=10,
         expected_output=55,
+        use_hosted=use_hosted,
     )
 
     if verbose:
         print(f"    ✓ Safety Audit:      PASSED (0 forbidden calls)")
-        print(f"    ✓ Correctness Test:  PASSED (solution(10) == 55)")
+        print(f"    ✓ Correctness Test:  PASSED (solution(10) == 55) [{sentinel.last_mode}]")
         print(f"    ✓ Attestation Sig:   {receipt.signature[:24]}...")
         print(f"    ✓ Verified Status:   {'CERTIFIED' if passed else 'REJECTED'}")
 
@@ -86,6 +89,7 @@ def run_demo(verbose: bool = True) -> int:
         code=malicious_code,
         test_input=10,
         expected_output=10,
+        use_hosted=use_hosted,
     )
 
     if verbose:
@@ -112,6 +116,7 @@ def verify_file(
     expected_output: int,
     verbose: bool = True,
     json_mode: bool = False,
+    use_hosted: bool = False,
 ) -> int:
     """Verify a miner code submission loaded dynamically from a file."""
     if not code_path.exists():
@@ -129,6 +134,7 @@ def verify_file(
         code=code,
         test_input=test_input,
         expected_output=expected_output,
+        use_hosted=use_hosted,
     )
 
     if json_mode:
@@ -140,11 +146,12 @@ def verify_file(
             "epoch": receipt.epoch,
             "signature": receipt.signature,
             "timestamp_ns": receipt.timestamp_ns,
+            "verification_mode": sentinel.last_mode,
         }
         print(json.dumps(data, indent=2))
     elif verbose:
         status_str = "CERTIFIED" if passed else "REJECTED"
-        print(f"Task: {task_id} | Status: {status_str} | Sig: {receipt.signature[:24]}...")
+        print(f"Task: {task_id} | Status: {status_str} | Mode: {sentinel.last_mode} | Sig: {receipt.signature[:24]}...")
 
     return 0 if passed else 2
 
@@ -156,6 +163,7 @@ def main() -> None:
     parser.add_argument("--task-id", type=str, default="task-custom-01", help="Task identifier")
     parser.add_argument("--input", type=int, default=10, help="Test input integer")
     parser.add_argument("--expected", type=int, default=55, help="Expected output integer")
+    parser.add_argument("--hosted", action="store_true", help="Route verification through hosted Cortensor API if CORTENSOR_API_KEY is present")
     parser.add_argument("--json", action="store_true", help="Output machine-readable JSON receipt")
     parser.add_argument("--quiet", action="store_true", help="Quiet mode")
     args = parser.parse_args()
@@ -169,10 +177,11 @@ def main() -> None:
                 expected_output=args.expected,
                 verbose=not args.quiet,
                 json_mode=args.json,
+                use_hosted=args.hosted,
             )
         )
 
-    sys.exit(run_demo(verbose=not args.quiet))
+    sys.exit(run_demo(verbose=not args.quiet, use_hosted=args.hosted))
 
 
 if __name__ == "__main__":

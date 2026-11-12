@@ -159,3 +159,58 @@ def test_cli_verify_file_json(capsys) -> None:
         assert len(data["signature"]) == 64
     finally:
         tmp_path.unlink(missing_ok=True)
+
+
+def test_query_hosted_portal_without_key() -> None:
+    from cortensor_validator.openminion_agent import query_hosted_portal, verify_via_hosted_portal
+
+    res = query_hosted_portal("def solution(x: int) -> int: return x", 1, 1, api_key=None)
+    assert res["mode"] == "local"
+    assert res["connected"] is False
+
+    tool_res = verify_via_hosted_portal("def solution(x: int) -> int: return x * 2", 3, 6)
+    assert tool_res["mode"] == "fallback_local"
+    assert tool_res["result"]["passed"] is True
+
+
+def test_query_hosted_portal_mock_connected(monkeypatch) -> None:
+    from unittest.mock import MagicMock
+    import urllib.request
+    from cortensor_validator.openminion_agent import CortensorSentinel, query_hosted_portal
+
+    class MockResponse:
+        status = 200
+
+        def read(self):
+            return b'{"passed": true, "task_id": "test-mock-01", "miner_score": 1.0}'
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            pass
+
+    monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout: MockResponse())
+
+    res = query_hosted_portal(
+        "def solution(x: int) -> int: return x",
+        1,
+        1,
+        api_key="ct-test-api-key",
+    )
+    assert res["mode"] == "hosted"
+    assert res["connected"] is True
+    assert res["data"]["passed"] is True
+
+    # Test Sentinel routing with hosted portal
+    sentinel = CortensorSentinel(api_key="ct-test-api-key")
+    passed, receipt = sentinel.verify_submission(
+        task_id="task-mock-hosted",
+        code="def solution(x: int) -> int: return x",
+        test_input=1,
+        expected_output=1,
+        use_hosted=True,
+    )
+    assert passed is True
+    assert sentinel.last_mode == "hosted"
+    assert receipt.passed is True
