@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-"""Automated Code Walkthrough & Pitch Video Generator for DoraHacks Hackathon #5.
+"""Automated 1440p QHD Code Walkthrough & Pitch Video Generator for DoraHacks #5.
 
-Compiles a 1080p, 60fps automated demonstration video that explicitly shows
-the actual Python code, AST security analysis, honest vs adversarial execution,
-and live integration test suite.
-
-Tools used:
-- Google Chrome (headless 1920x1080 HTML/CSS slide rendering)
-- edge-tts (studio-grade neural voiceover synthesis with retry engine)
-- ffmpeg (sub-second audio/video compositing and concatenation)
+Features:
+- High-resolution 2560x1440 (2K QHD) video with large, ultra-legible typography.
+- Authentic Linux terminal interface (Ubuntu/GNOME on FrameworkDesktop: mike-anderson@FrameworkDesktop).
+- Side-by-side source code and live execution traces.
+- Zero macOS window elements — pure native Linux styling.
+- Visually lossless H.264 encoding (CRF 16) for razor-sharp text rendering.
 """
 
 from __future__ import annotations
@@ -22,6 +20,8 @@ import time
 from pathlib import Path
 
 VOICE = "en-US-AndrewMultilingualNeural"
+WIDTH = 2560
+HEIGHT = 1440
 
 SCENES = [
     {
@@ -41,27 +41,27 @@ SCENES = [
             </div>
             <div class="flow-container">
                 <div class="flow-step">
-                    <div class="flow-num">1</div>
+                    <div class="flow-num">01</div>
                     <h4>Subnet Miner</h4>
                     <p>Submits Python algorithm proposal to subnet mempool.</p>
                     <div class="chip">Task Code Proposal</div>
                 </div>
                 <div class="flow-arrow">➔</div>
                 <div class="flow-step highlight">
-                    <div class="flow-num">2</div>
+                    <div class="flow-num">02</div>
                     <h4>Task Sentinel (Our Agent)</h4>
                     <p>OpenMinion 0.1 Agent runs AST audit + safe test execution.</p>
                     <div class="chip chip-blue">OpenMinion + AST Verifier</div>
                 </div>
                 <div class="flow-arrow">➔</div>
                 <div class="flow-step">
-                    <div class="flow-num">3</div>
+                    <div class="flow-num">03</div>
                     <h4>Subnet Consensus</h4>
                     <p>HMAC-SHA256 epoch attestation committed on-chain.</p>
                     <div class="chip chip-green">Cryptographic Receipt</div>
                 </div>
             </div>
-            <div class="grid-2" style="margin-top: 30px;">
+            <div class="grid-2" style="margin-top: 40px;">
                 <div class="card danger">
                     <div class="card-icon">❌</div>
                     <h3>The Cloud LLM Bottleneck</h3>
@@ -69,6 +69,7 @@ SCENES = [
                         <li><strong>1,500 – 3,000 ms</strong> latency per verification</li>
                         <li><strong>Token cost:</strong> $0.02 – $0.05 per task check</li>
                         <li><strong>Vulnerability:</strong> LLM prompt injection & non-determinism</li>
+                        <li><strong>Fragile:</strong> Fails when cloud providers throttle APIs</li>
                     </ul>
                 </div>
                 <div class="card success">
@@ -78,6 +79,7 @@ SCENES = [
                         <li><strong>&lt; 0.5 ms</strong> complete verification cycle</li>
                         <li><strong>Zero Token Cost:</strong> 100% local silicon execution</li>
                         <li><strong>100% Deterministic:</strong> AST bytecode analysis + HMAC receipt</li>
+                        <li><strong>Sovereign:</strong> Runs offline on AMD Strix Halo silicon</li>
                     </ul>
                 </div>
             </div>
@@ -100,7 +102,10 @@ SCENES = [
             </div>
             <div class="code-split">
                 <div class="code-box">
-                    <div class="code-header"><span>Python — openminion_agent.py</span><span class="lang-tag">OpenMinion SDK</span></div>
+                    <div class="linux-bar">
+                        <div class="linux-title"><span class="linux-tab">openminion_agent.py</span></div>
+                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                    </div>
                     <pre><code><span class="k">from</span> openminion <span class="k">import</span> Agent, tool
 <span class="k">from</span> cortensor_validator.verifier <span class="k">import</span> verify_code_safety
 <span class="k">from</span> cortensor_validator.attestation <span class="k">import</span> AttestationSigner
@@ -165,7 +170,10 @@ SCENES = [
             </div>
             <div class="code-split">
                 <div class="code-box">
-                    <div class="code-header"><span>Miner Submission: task-fibonacci-10</span><span class="lang-tag">Submitted Code</span></div>
+                    <div class="linux-bar">
+                        <div class="linux-title"><span class="linux-tab">submission_fibonacci.py</span></div>
+                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                    </div>
                     <pre><code><span class="k">def</span> <span class="fn">solution</span>(n: <span class="nb">int</span>) -> <span class="nb">int</span>:
     <span class="str">\"\"\"Calculate n-th Fibonacci number iteratively.\"\"\"</span>
     a, b = 0, 1
@@ -179,11 +187,12 @@ SCENES = [
                     </div>
                 </div>
                 <div class="terminal-mini">
-                    <div class="terminal-bar">
-                        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-                        <span class="terminal-title">OpenMinion Agent Trace</span>
+                    <div class="linux-bar">
+                        <div class="linux-title">mike-anderson@FrameworkDesktop: ~/dev/cortensor-subnet-validator</div>
+                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
                     </div>
                     <div class="term-lines">
+                        <p class="t-line"><span class="t-prompt">mike-anderson@FrameworkDesktop:~$</span> uv run sentinel</p>
                         <p class="t-line"><span class="t-cyan">[SENTINEL]</span> Ingesting task: 'task-fibonacci-10'</p>
                         <p class="t-line"><span class="t-yellow">↳ tool:</span> audit_code_safety(code)</p>
                         <p class="t-line t-indent"><span class="t-green">✓ Valid:</span> True | Violations: 0 | Latency: 52μs</p>
@@ -214,7 +223,10 @@ SCENES = [
             </div>
             <div class="code-split">
                 <div class="code-box danger-border">
-                    <div class="code-header"><span style="color: #ef4444;">Malicious Proposal: task-exploit-attempt</span><span class="lang-tag" style="color: #ef4444; border-color: #ef4444;">ATTACK PAYLOAD</span></div>
+                    <div class="linux-bar danger-header">
+                        <div class="linux-title" style="color: #ef4444;"><span class="linux-tab-danger">exploit_attempt.py</span></div>
+                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                    </div>
                     <pre><code><span class="k" style="color: #ef4444; font-weight: bold;">import</span> os  <span class="comment"># &lt;-- FORBIDDEN PRIMITIVE!</span>
 
 <span class="k">def</span> <span class="fn">solution</span>(n: <span class="nb">int</span>) -> <span class="nb">int</span>:
@@ -228,11 +240,12 @@ SCENES = [
                     </div>
                 </div>
                 <div class="terminal-mini">
-                    <div class="terminal-bar">
-                        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-                        <span class="terminal-title">OpenMinion Agent Trace</span>
+                    <div class="linux-bar">
+                        <div class="linux-title">mike-anderson@FrameworkDesktop: ~/dev/cortensor-subnet-validator</div>
+                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
                     </div>
                     <div class="term-lines">
+                        <p class="t-line"><span class="t-prompt">mike-anderson@FrameworkDesktop:~$</span> uv run sentinel</p>
                         <p class="t-line"><span class="t-cyan">[SENTINEL]</span> Ingesting task: 'task-exploit-attempt'</p>
                         <p class="t-line"><span class="t-yellow">↳ tool:</span> audit_code_safety(code)</p>
                         <p class="t-line t-indent"><span class="t-red">✗ BLOCKED:</span> Forbidden import 'os' detected!</p>
@@ -261,15 +274,14 @@ SCENES = [
                 <p class="subtitle">Empirical validation verifying every security boundary and agent integration.</p>
             </div>
             <div class="terminal-window">
-                <div class="terminal-bar">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
-                    <span class="terminal-title">bash — pytest tests/test_validator.py — 1920x1080</span>
+                <div class="linux-bar">
+                    <div class="linux-title">mike-anderson@FrameworkDesktop: ~/dev/cortensor-subnet-validator</div>
+                    <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
                 </div>
                 <div class="terminal-content">
-                    <p class="cmd">$ uv run pytest tests/test_validator.py -v</p>
+                    <p class="cmd"><span class="t-prompt">mike-anderson@FrameworkDesktop:~/dev/cortensor-subnet-validator$</span> uv run pytest tests/test_validator.py -v</p>
                     <p class="dim">rootdir: /home/mike-anderson/dev/cortensor-subnet-validator</p>
+                    <p class="dim">plugins: asyncio-1.4.1, anyio-4.16.0, platformdirs-4.14.5, cov-7.1.0</p>
                     <p><span class="pass">PASSED</span> test_code_safety_accepts_clean_code <span class="dim">— verifies valid pure logic passes AST</span></p>
                     <p><span class="pass">PASSED</span> test_code_safety_rejects_forbidden_imports <span class="dim">— catches 'os', 'sys', 'socket', 'subprocess'</span></p>
                     <p><span class="pass">PASSED</span> test_code_safety_rejects_forbidden_builtins <span class="dim">— catches 'eval()', 'exec()', 'open()'</span></p>
@@ -319,12 +331,12 @@ SCENES = [
                     <div class="code-pill">docs/cortensor_openminion_feedback_report.md</div>
                 </div>
             </div>
-            <div class="footer-banner" style="margin-top: 30px; padding: 24px 30px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="footer-banner" style="margin-top: 40px; padding: 30px 40px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 20px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h4 style="font-size: 24px; color: #ffffff; margin-bottom: 6px;">Ready for Cortensor Subnet Deployment</h4>
-                    <p style="font-size: 18px; color: #94a3b8;">Deterministic, sovereign, microsecond task verification built on OpenMinion 0.1.</p>
+                    <h4 style="font-size: 30px; color: #ffffff; margin-bottom: 8px;">Ready for Cortensor Subnet Deployment</h4>
+                    <p style="font-size: 22px; color: #94a3b8;">Deterministic, sovereign, microsecond task verification built on OpenMinion 0.1.</p>
                 </div>
-                <div class="code-pill" style="font-size: 20px; font-weight: bold; color: #38bdf8;">uv run sentinel</div>
+                <div class="code-pill" style="font-size: 26px; font-weight: bold; color: #38bdf8;">uv run sentinel</div>
             </div>
         """,
     },
@@ -337,157 +349,183 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    width: 1920px;
-    height: 1080px;
-    background: radial-gradient(circle at 50% 15%, #1e293b 0%, #0f172a 60%, #020617 100%);
+    width: 2560px;
+    height: 1440px;
+    background: radial-gradient(circle at 50% 12%, #182234 0%, #0b0f19 55%, #030712 100%);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: #f8fafc;
-    padding: 70px 90px;
+    padding: 80px 110px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
   }
-  .header { margin-bottom: 30px; }
+  .header { margin-bottom: 36px; }
   .badge {
     display: inline-block;
-    padding: 8px 18px;
+    padding: 10px 24px;
     background: rgba(56, 189, 248, 0.15);
     border: 1px solid rgba(56, 189, 248, 0.4);
     border-radius: 9999px;
     color: #38bdf8;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 16px;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
   }
-  h1 { font-size: 52px; font-weight: 800; color: #ffffff; margin-bottom: 10px; letter-spacing: -1px; }
-  .subtitle { font-size: 22px; color: #94a3b8; font-weight: 400; max-width: 1500px; }
+  h1 { font-size: 68px; font-weight: 800; color: #ffffff; margin-bottom: 14px; letter-spacing: -1.5px; }
+  .subtitle { font-size: 28px; color: #94a3b8; font-weight: 400; max-width: 2000px; line-height: 1.4; }
   
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 36px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 48px; }
 
   .flow-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(30, 41, 59, 0.4);
-    border: 1px solid rgba(148, 163, 184, 0.15);
-    border-radius: 20px;
-    padding: 24px 40px;
+    background: rgba(30, 41, 59, 0.45);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 24px;
+    padding: 32px 50px;
   }
   .flow-step {
     flex: 1;
-    background: rgba(15, 23, 42, 0.8);
+    background: #0d1322;
     border: 1px solid #334155;
-    border-radius: 14px;
-    padding: 20px;
+    border-radius: 18px;
+    padding: 28px;
     text-align: center;
   }
   .flow-step.highlight {
     border-color: #38bdf8;
-    background: rgba(56, 189, 248, 0.1);
+    background: rgba(56, 189, 248, 0.12);
   }
-  .flow-num { font-size: 20px; font-weight: 900; color: #38bdf8; margin-bottom: 6px; }
-  .flow-step h4 { font-size: 22px; color: #f8fafc; margin-bottom: 6px; }
-  .flow-step p { font-size: 16px; color: #94a3b8; margin-bottom: 12px; }
-  .flow-arrow { font-size: 32px; color: #64748b; padding: 0 20px; font-weight: bold; }
-  .chip { display: inline-block; padding: 4px 12px; background: #1e293b; border-radius: 6px; font-size: 14px; font-weight: 600; color: #cbd5e1; }
+  .flow-num { font-size: 26px; font-weight: 900; color: #38bdf8; margin-bottom: 8px; }
+  .flow-step h4 { font-size: 28px; color: #f8fafc; margin-bottom: 8px; }
+  .flow-step p { font-size: 20px; color: #94a3b8; margin-bottom: 16px; line-height: 1.4; }
+  .flow-arrow { font-size: 40px; color: #64748b; padding: 0 28px; font-weight: bold; }
+  .chip { display: inline-block; padding: 6px 16px; background: #1e293b; border-radius: 8px; font-size: 18px; font-weight: 600; color: #cbd5e1; }
   .chip-blue { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
   .chip-green { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4); }
 
   .card {
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid rgba(148, 163, 184, 0.15);
-    border-radius: 20px;
-    padding: 32px;
-    backdrop-filter: blur(16px);
+    background: rgba(30, 41, 59, 0.65);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 24px;
+    padding: 40px;
+    backdrop-filter: blur(20px);
   }
   .card.danger {
     background: rgba(239, 68, 68, 0.08);
-    border-color: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.35);
   }
   .card.success {
     background: rgba(34, 197, 94, 0.08);
-    border-color: rgba(34, 197, 94, 0.3);
+    border-color: rgba(34, 197, 94, 0.35);
   }
-  .card-icon { font-size: 36px; margin-bottom: 12px; }
-  .card h3 { font-size: 26px; color: #f1f5f9; margin-bottom: 12px; font-weight: 700; }
-  .card p { font-size: 18px; color: #cbd5e1; line-height: 1.5; margin-bottom: 16px; }
+  .card-icon { font-size: 48px; margin-bottom: 16px; }
+  .card h3 { font-size: 34px; color: #f1f5f9; margin-bottom: 16px; font-weight: 700; }
+  .card p { font-size: 22px; color: #cbd5e1; line-height: 1.5; margin-bottom: 20px; }
   .card ul { list-style: none; }
-  .card ul li { font-size: 18px; color: #cbd5e1; line-height: 1.9; }
+  .card ul li { font-size: 22px; color: #cbd5e1; line-height: 2.1; }
   .card ul li strong { color: #ffffff; }
 
   .code-split {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 36px;
-    height: 640px;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 48px;
+    height: 820px;
   }
   .code-box {
-    background: #090d16;
+    background: #0a0e17;
     border: 1px solid #1e293b;
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
   }
   .code-box.danger-border {
-    border-color: rgba(239, 68, 68, 0.4);
+    border-color: rgba(239, 68, 68, 0.45);
   }
-  .code-header {
-    background: #111827;
-    padding: 14px 20px;
+
+  /* Authentic Linux Header Bar */
+  .linux-bar {
+    background: #181f30;
+    padding: 16px 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #1e293b;
-    font-size: 16px;
+    border-bottom: 1px solid #222d42;
+  }
+  .linux-title {
+    font-size: 22px;
+    color: #e2e8f0;
+    font-family: "JetBrains Mono", monospace;
     font-weight: 600;
+  }
+  .linux-tab {
+    background: #0a0e17;
+    padding: 6px 18px;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid #222d42;
+    border-bottom: none;
+    color: #38bdf8;
+  }
+  .linux-tab-danger {
+    background: #0a0e17;
+    padding: 6px 18px;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-bottom: none;
+    color: #ef4444;
+  }
+  .linux-controls {
+    display: flex;
+    gap: 20px;
+    font-size: 22px;
     color: #94a3b8;
     font-family: monospace;
+    font-weight: bold;
+    user-select: none;
   }
-  .lang-tag {
-    font-size: 12px;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    background: rgba(56, 189, 248, 0.15);
-    color: #38bdf8;
-    border-radius: 4px;
-    border: 1px solid rgba(56, 189, 248, 0.3);
+  .danger-header {
+    background: #241319;
+    border-bottom-color: rgba(239, 68, 68, 0.3);
   }
+
   pre {
-    padding: 24px;
-    font-family: "JetBrains Mono", Consolas, monospace;
-    font-size: 18px;
-    line-height: 1.6;
+    padding: 32px 36px;
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 25px;
+    line-height: 1.65;
     color: #e2e8f0;
     overflow-y: auto;
     flex: 1;
   }
-  .k { color: #f43f5e; font-weight: bold; }
+  .k { color: #fb7185; font-weight: bold; }
   .fn { color: #38bdf8; font-weight: bold; }
-  .str { color: #34d399; }
+  .str { color: #4ade80; }
   .nb { color: #fbbf24; }
   .dec { color: #c084fc; font-weight: bold; }
-  .comment { color: #64748b; font-style: italic; }
+  .comment { color: #94a3b8; font-style: italic; }
 
   .eval-flow {
-    padding: 16px 20px;
-    background: #0c1220;
+    padding: 20px 28px;
+    background: #0e1526;
     border-top: 1px solid #1e293b;
     display: flex;
-    gap: 12px;
+    gap: 16px;
   }
   .flow-pill {
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 14px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 18px;
     font-weight: 700;
   }
-  .flow-pill.pass { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
-  .flow-pill.fail { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+  .flow-pill.pass { background: rgba(34, 197, 94, 0.18); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.35); }
+  .flow-pill.fail { background: rgba(239, 68, 68, 0.18); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.35); }
 
   .info-pane {
     display: flex;
@@ -497,109 +535,98 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   .lifecycle-step {
     display: flex;
     align-items: flex-start;
-    gap: 18px;
-    background: rgba(15, 23, 42, 0.6);
+    gap: 24px;
+    background: #0d1322;
     border: 1px solid #334155;
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 16px;
+    padding: 26px;
   }
   .step-badge {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     background: #38bdf8;
-    color: #0f172a;
+    color: #0b0f19;
     font-weight: 900;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 24px;
     flex-shrink: 0;
   }
-  .lifecycle-step strong { font-size: 20px; color: #ffffff; display: block; margin-bottom: 6px; }
-  .lifecycle-step p { font-size: 16px; color: #94a3b8; line-height: 1.4; margin: 0; }
+  .lifecycle-step strong { font-size: 26px; color: #ffffff; display: block; margin-bottom: 8px; }
+  .lifecycle-step p { font-size: 20px; color: #94a3b8; line-height: 1.45; margin: 0; }
 
   .terminal-mini {
-    background: #090d16;
+    background: #0a0e17;
     border: 1px solid #1e293b;
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
   }
   .term-lines {
-    padding: 24px;
-    font-family: "JetBrains Mono", Consolas, monospace;
-    font-size: 18px;
-    line-height: 1.8;
+    padding: 32px 36px;
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 24px;
+    line-height: 1.9;
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
   .t-line { color: #f8fafc; }
+  .t-prompt { color: #4ade80; font-weight: bold; }
   .t-cyan { color: #38bdf8; font-weight: bold; }
   .t-yellow { color: #fbbf24; font-weight: bold; }
   .t-green { color: #22c55e; font-weight: bold; }
   .t-red { color: #ef4444; font-weight: bold; }
-  .t-indent { padding-left: 24px; }
+  .t-indent { padding-left: 32px; }
   .t-banner-pass {
-    margin-top: 16px;
-    padding: 12px 18px;
-    background: rgba(34, 197, 94, 0.15);
-    border: 1px solid rgba(34, 197, 94, 0.4);
-    border-radius: 8px;
+    margin-top: 20px;
+    padding: 16px 24px;
+    background: rgba(34, 197, 94, 0.18);
+    border: 1px solid rgba(34, 197, 94, 0.45);
+    border-radius: 12px;
     color: #22c55e;
     font-weight: 800;
-    font-size: 18px;
+    font-size: 24px;
     text-align: center;
   }
   .t-banner-fail {
-    margin-top: 16px;
-    padding: 12px 18px;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.4);
-    border-radius: 8px;
+    margin-top: 20px;
+    padding: 16px 24px;
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    border-radius: 12px;
     color: #ef4444;
     font-weight: 800;
-    font-size: 18px;
+    font-size: 24px;
     text-align: center;
   }
 
   .terminal-window {
-    background: #090d16;
+    background: #0a0e17;
     border: 1px solid #1e293b;
-    border-radius: 16px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    border-radius: 20px;
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
     overflow: hidden;
   }
-  .terminal-bar {
-    background: #111827;
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid #1e293b;
-  }
-  .dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
-  .dot.red { background: #ef4444; }
-  .dot.yellow { background: #f59e0b; }
-  .dot.green { background: #10b981; }
-  .terminal-title { margin-left: 16px; font-size: 16px; color: #64748b; font-family: monospace; }
-  .terminal-content { padding: 30px; font-family: "JetBrains Mono", Consolas, monospace; font-size: 19px; line-height: 1.8; }
-  .cmd { color: #f8fafc; font-weight: bold; margin-bottom: 12px; }
+  .terminal-content { padding: 40px; font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 25px; line-height: 1.9; }
+  .cmd { color: #f8fafc; font-weight: bold; margin-bottom: 16px; }
   .dim { color: #64748b; }
-  .pass { color: #10b981; font-weight: bold; }
-  .success-banner { color: #10b981; font-weight: bold; margin-top: 20px; font-size: 22px; }
+  .pass { color: #22c55e; font-weight: bold; }
+  .success-banner { color: #22c55e; font-weight: bold; margin-top: 28px; font-size: 28px; }
 
   .code-pill {
     display: inline-block;
-    padding: 8px 16px;
-    background: #020617;
+    padding: 10px 22px;
+    background: #030712;
     border: 1px solid #334155;
-    border-radius: 8px;
-    font-family: monospace;
-    font-size: 16px;
+    border-radius: 10px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 22px;
     color: #38bdf8;
   }
 
@@ -607,9 +634,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid rgba(148, 163, 184, 0.15);
-    padding-top: 20px;
-    font-size: 18px;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+    padding-top: 24px;
+    font-size: 22px;
     color: #64748b;
   }
   .footer-brand { font-weight: bold; color: #94a3b8; }
@@ -619,7 +646,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   __BODY__
   <div class="footer">
     <div class="footer-brand">Cortensor Task Sentinel • DoraHacks #2418</div>
-    <div>OpenMinion 0.1 SDK • Deterministic AST Verifier • Zero Cloud Token Cost</div>
+    <div>Ubuntu Linux 26.04 (AMD Ryzen AI Max 395 / FrameworkDesktop) • OpenMinion 0.1 SDK</div>
   </div>
 </body>
 </html>
@@ -674,21 +701,21 @@ def synthesize_voiceover(text: str, output_path: Path, max_retries: int = 4) -> 
 
 def build_scene(scene: dict[str, str], work_dir: Path) -> Path:
     scene_id = scene["id"]
-    print(f"🎬 Processing {scene_id}...")
+    print(f"🎬 Processing {scene_id} at {WIDTH}x{HEIGHT} QHD...")
 
     # 1. Write HTML
     html_content = HTML_TEMPLATE.replace("__BODY__", scene["html_body"])
     html_path = work_dir / f"{scene_id}.html"
     html_path.write_text(html_content, encoding="utf-8")
 
-    # 2. Render screenshot with headless Chrome
+    # 2. Render screenshot with headless Chrome at 2560x1440
     png_path = work_dir / f"{scene_id}.png"
     chrome_cmd = [
         "google-chrome",
         "--headless",
         "--disable-gpu",
         f"--screenshot={png_path}",
-        "--window-size=1920,1080",
+        f"--window-size={WIDTH},{HEIGHT}",
         str(html_path),
     ]
     run_command(chrome_cmd)
@@ -698,7 +725,7 @@ def build_scene(scene: dict[str, str], work_dir: Path) -> Path:
     duration = synthesize_voiceover(scene["narration"], mp3_path)
     print(f"   Duration: {duration:.2f}s")
 
-    # 4. Composite image + audio into MP4
+    # 4. Composite image + audio into MP4 with visually lossless CRF 16
     mp4_path = work_dir / f"{scene_id}.mp4"
     ffmpeg_cmd = [
         "ffmpeg",
@@ -711,6 +738,10 @@ def build_scene(scene: dict[str, str], work_dir: Path) -> Path:
         str(mp3_path),
         "-c:v",
         "libx264",
+        "-crf",
+        "16",
+        "-preset",
+        "medium",
         "-tune",
         "stillimage",
         "-c:a",
@@ -746,7 +777,7 @@ def main() -> None:
             for p in scene_mp4s:
                 f.write(f"file '{p.resolve()}'\n")
 
-        print("🎞️ Stitching complete video...")
+        print("🎞️ Stitching complete QHD video...")
         concat_cmd = [
             "ffmpeg",
             "-y",
@@ -778,8 +809,9 @@ def main() -> None:
     duration = float(info["format"]["duration"])
     size_mb = int(info["format"]["size"]) / (1024 * 1024)
 
-    print("\n✅ Video Generation Succeeded!")
+    print("\n✅ QHD Linux Video Generation Succeeded!")
     print(f"📁 Output: {final_video}")
+    print(f"📐 Resolution: {WIDTH}x{HEIGHT} (2K QHD)")
     print(f"⏱️ Total Duration: {duration:.2f}s (~{int(duration // 60)}m {int(duration % 60)}s)")
     print(f"📦 File Size: {size_mb:.2f} MB")
 
