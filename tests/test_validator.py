@@ -125,3 +125,37 @@ def test_cli_verify_file() -> None:
         assert ret == 0
     finally:
         tmp_path.unlink(missing_ok=True)
+
+
+def test_execute_test_case_timeout() -> None:
+    # Bounded infinite loop should trigger ExecutionTimeoutError
+    infinite_loop_code = "def solution(n: int) -> int:\n    while True:\n        pass\n"
+    res = execute_test_case(infinite_loop_code, 5, 5, timeout_seconds=0.2)
+    assert res["passed"] is False
+    assert "timed out" in res["error"].lower()
+
+
+def test_cli_verify_file_json(capsys) -> None:
+    import json
+
+    with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as tmp:
+        tmp.write("def solution(n: int) -> int:\n    return n * 4\n")
+        tmp_path = Path(tmp.name)
+
+    try:
+        ret = verify_file(
+            code_path=tmp_path,
+            task_id="test-json-task",
+            test_input=3,
+            expected_output=12,
+            json_mode=True,
+        )
+        assert ret == 0
+        captured = capsys.readouterr()
+        data = json.loads(captured.out)
+        assert data["task_id"] == "test-json-task"
+        assert data["status"] == "CERTIFIED"
+        assert data["passed"] is True
+        assert len(data["signature"]) == 64
+    finally:
+        tmp_path.unlink(missing_ok=True)

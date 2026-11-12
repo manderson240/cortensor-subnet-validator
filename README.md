@@ -65,8 +65,9 @@ In decentralized AI subnets (e.g. Cortensor), miners submit compute proposals an
 
 **Cortensor Task Sentinel** provides a lightweight, deterministic agent verification pipeline using the official OpenMinion 0.1 SDK:
 1. **`audit_code_safety`**: Statically inspects submitted code using Python AST to detect unsafe modules (`os`, `subprocess`, `socket`) and dangerous builtins (`eval`, `exec`, `open`) in $<0.2\,\text{ms}$ with **0 LLM tokens**.
-2. **`execute_test_case`**: Evaluates verified pure logic against unit test cases in a bounded namespace.
+2. **`execute_test_case`**: Evaluates verified pure logic against unit test cases in a bounded namespace, guarded by strict CPU execution timeouts (`signal.setitimer`) against recursion/infinite-loop DoS attacks.
 3. **`create_attestation_receipt`**: Signs an HMAC-SHA256 cryptographic attestation receipt linking the task ID, validator ID, timestamp, and verification outcome.
+4. **Machine-Readable CLI Receipts (`--json`)**: Emits structured JSON attestation receipts directly parsable by downstream subnet consensus services.
 
 ---
 
@@ -87,12 +88,14 @@ All node parameters are configurable via standard environment variables:
 ```bash
 uv run pytest
 ```
-All 11 unit tests pass in $<1.5$ seconds with zero network or paid API requirements:
+All 13 unit tests pass in $<1.5$ seconds with zero network or paid API requirements:
 - AST code safety (clean code pass, forbidden import block, forbidden builtin block, syntax errors)
 - Cryptographic attestation signing and tamper detection
 - OpenMinion `@tool` registration and Agent execution
 - Dynamic environment variable configuration overrides
-- Dynamic file verification via CLI
+- Dynamic file verification via CLI flags
+- Bounded execution timeout defense against CPU exhaustion
+- Structured JSON output formatting
 
 ---
 

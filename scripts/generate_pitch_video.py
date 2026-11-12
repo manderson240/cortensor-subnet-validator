@@ -3,10 +3,11 @@
 
 Features:
 - High-resolution 2560x1440 (2K QHD) video with large, ultra-legible typography.
+- Professional Hero Opening Card at 0:00.
 - Authentic Linux terminal interface using dynamic environment paths (${CORTENSOR_HOME}, validator@node-01).
 - 100% complete source code visibility — ZERO abbreviations, ZERO ellipses (...), ZERO clipping.
 - Displays both the OpenMinion 0.1 Agent tools (openminion_agent.py) and AST verifier (verifier.py).
-- Side-by-side source code and live execution traces.
+- CPU execution timeout defense and JSON receipt generation in test suite (13/13 passing).
 - Visually lossless H.264 encoding (CRF 16) with natural audio padding (+1.25s hold) between slides.
 """
 
@@ -29,6 +30,52 @@ PROJECT_ROOT_DISPLAY = os.getenv("PROJECT_ROOT_DISPLAY", "${CORTENSOR_HOME}")
 VALIDATOR_NODE_DISPLAY = os.getenv("VALIDATOR_NODE_DISPLAY", "validator@node-01")
 
 SCENES = [
+    {
+        "id": "scene0_title_hero",
+        "title": "Cortensor Task Sentinel Showcase",
+        "badge": "DoraHacks Hackathon #5 • Subnet Track",
+        "narration": (
+            "Welcome to the Cortensor Task Sentinel showcase. Built with the official OpenMinion 0.1 SDK, "
+            "Task Sentinel is a high speed, deterministic verification agent designed for decentralized compute subnets."
+        ),
+        "html_body": f"""
+            <div class="header" style="text-align: center; margin-top: 30px; margin-bottom: 30px;">
+                <span class="badge" style="font-size: 22px; padding: 10px 28px;">DoraHacks Hackathon #5 • Subnet Task Verification Track</span>
+                <h1 style="font-size: 68px; margin-top: 18px; margin-bottom: 14px; letter-spacing: -2px;">Cortensor Task Sentinel</h1>
+                <p class="subtitle" style="font-size: 28px; margin: 0 auto; max-width: 1900px; color: #38bdf8; font-weight: 500;">
+                    Autonomous, Deterministic Task Verification Agent built on the OpenMinion 0.1 SDK
+                </p>
+            </div>
+            <div class="grid-4" style="margin-top: 40px; margin-bottom: 30px;">
+                <div class="card" style="text-align: center; border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.08);">
+                    <div class="card-icon">⚡</div>
+                    <h3 style="font-size: 32px; color: #38bdf8; margin-bottom: 8px;">&lt; 0.5 ms</h3>
+                    <p style="font-size: 19px; color: #cbd5e1;">Deterministic verification cycle with 0 LLM token cost</p>
+                </div>
+                <div class="card" style="text-align: center; border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.08);">
+                    <div class="card-icon">🛡️</div>
+                    <h3 style="font-size: 32px; color: #22c55e; margin-bottom: 8px;">AST Engine</h3>
+                    <p style="font-size: 19px; color: #cbd5e1;">Static bytecode inspection blocks trojans and CPU loops before run</p>
+                </div>
+                <div class="card" style="text-align: center; border-color: rgba(192, 132, 252, 0.4); background: rgba(192, 132, 252, 0.08);">
+                    <div class="card-icon">✍️</div>
+                    <h3 style="font-size: 32px; color: #c084fc; margin-bottom: 8px;">HMAC Receipts</h3>
+                    <p style="font-size: 19px; color: #cbd5e1;">Cryptographic epoch-fenced attestation committed on-chain</p>
+                </div>
+                <div class="card" style="text-align: center; border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08);">
+                    <div class="card-icon">🛠️</div>
+                    <h3 style="font-size: 32px; color: #f59e0b; margin-bottom: 8px;">Upstream PR #734</h3>
+                    <p style="font-size: 19px; color: #cbd5e1;">Resolved core circular import in OpenMinion framework</p>
+                </div>
+            </div>
+            <div class="flow-container" style="margin-top: 30px;">
+                <div class="chip chip-blue" style="font-size: 18px; padding: 10px 22px;">Python 3.13 / 3.11+</div>
+                <div class="chip chip-green" style="font-size: 18px; padding: 10px 22px;">13/13 Unit Tests Passing</div>
+                <div class="chip chip-blue" style="font-size: 18px; padding: 10px 22px;">1-Command CLI: uv run sentinel</div>
+                <div class="chip chip-green" style="font-size: 18px; padding: 10px 22px;">Machine-Readable --json Output</div>
+            </div>
+        """,
+    },
     {
         "id": "scene1_problem_workflow",
         "title": "Subnet Task Verification Workflow",
@@ -379,17 +426,17 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
     },
     {
         "id": "scene6_test_suite",
-        "title": "Comprehensive Test Suite (11/11 Passed)",
+        "title": "Comprehensive Test Suite (13/13 Passed)",
         "badge": "Verification Proof • pytest tests/test_validator.py",
         "narration": (
-            "Our test suite runs using standard test commands. All eleven unit tests pass in under two seconds, "
-            "verifying clean code acceptance, environment variable configuration, and dynamic file execution."
+            "Our test suite runs using standard test commands. All thirteen unit tests pass in under two seconds, "
+            "verifying clean code acceptance, CPU timeout defense, and JSON receipt generation."
         ),
         "html_body": f"""
             <div class="header">
-                <span class="badge">Verification Proof • 11/11 Tests Passing</span>
+                <span class="badge">Verification Proof • 13/13 Tests Passing</span>
                 <h1>Full Test Suite Execution</h1>
-                <p class="subtitle">Empirical validation verifying every security boundary, environment variable override, and dynamic execution.</p>
+                <p class="subtitle">Empirical validation verifying security boundaries, CPU loop defense, and dynamic JSON receipts.</p>
             </div>
             <div class="terminal-window">
                 <div class="linux-bar">
@@ -411,7 +458,9 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                     <p><span class="pass">PASSED</span> test_sentinel_end_to_end_verification <span class="dim">— validates full pipeline from input to receipt</span></p>
                     <p><span class="pass">PASSED</span> test_environment_variable_configuration <span class="dim">— tests dynamic CORTENSOR_VALIDATOR_ID and EPOCH</span></p>
                     <p><span class="pass">PASSED</span> test_cli_verify_file <span class="dim">— tests dynamic file-based verification via CLI flags</span></p>
-                    <p class="success-banner">============================== 11 passed in 1.29s ==============================</p>
+                    <p><span class="pass">PASSED</span> test_execute_test_case_timeout <span class="dim">— blocks infinite loop / CPU recursion DoS attacks</span></p>
+                    <p><span class="pass">PASSED</span> test_cli_verify_file_json <span class="dim">— outputs machine-readable JSON attestation receipt</span></p>
+                    <p class="success-banner">============================== 13 passed in 1.48s ==============================</p>
                 </div>
             </div>
         """,
@@ -435,7 +484,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                 <div class="card">
                     <div class="card-icon">🚀</div>
                     <h3>Standalone Spoke Repo</h3>
-                    <p>Clean, decoupled repository with 11 passing unit tests, zero vendor bloat, and 1-command startup.</p>
+                    <p>Clean, decoupled repository with 13 passing unit tests, zero vendor bloat, and 1-command startup.</p>
                     <div class="code-pill">github.com/manderson240/cortensor-subnet-validator</div>
                 </div>
                 <div class="card" style="border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.08);">
@@ -456,7 +505,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                     <h4 style="font-size: 28px; color: #ffffff; margin-bottom: 6px;">Ready for Cortensor Subnet Deployment</h4>
                     <p style="font-size: 21px; color: #94a3b8;">Deterministic, sovereign, microsecond task verification built on OpenMinion 0.1.</p>
                 </div>
-                <div class="code-pill" style="font-size: 24px; font-weight: bold; color: #38bdf8;">uv run sentinel</div>
+                <div class="code-pill" style="font-size: 24px; font-weight: bold; color: #38bdf8;">uv run sentinel --json</div>
             </div>
         """,
     },
@@ -501,6 +550,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 36px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
 
   .flow-container {
     display: flex;
@@ -630,7 +680,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   .fn { color: #38bdf8; font-weight: bold; }
   .str { color: #4ade80; }
   .nb { color: #fbbf24; }
-  .dec { color: #c084fc; font-weight: bold; }
+  .dec { color: #c084fc; font-weight: bold; text-shadow: 0 0 12px rgba(192, 132, 252, 0.4); }
   .comment { color: #94a3b8; font-style: italic; }
 
   .eval-flow {
@@ -709,19 +759,19 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     flex-direction: column;
   }
   .terminal-content {
-    padding: 28px 34px;
+    padding: 24px 32px;
     font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
-    font-size: 21px;
-    line-height: 1.75;
+    font-size: 20px;
+    line-height: 1.68;
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
-  .cmd { color: #f8fafc; font-weight: bold; margin-bottom: 10px; }
+  .cmd { color: #f8fafc; font-weight: bold; margin-bottom: 8px; }
   .dim { color: #64748b; }
   .pass { color: #22c55e; font-weight: bold; }
-  .success-banner { color: #22c55e; font-weight: bold; margin-top: 14px; font-size: 23px; }
+  .success-banner { color: #22c55e; font-weight: bold; margin-top: 12px; font-size: 22px; }
 
   .code-pill {
     display: inline-block;

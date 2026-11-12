@@ -11,6 +11,7 @@ Supports:
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 import time
@@ -110,10 +111,15 @@ def verify_file(
     test_input: int,
     expected_output: int,
     verbose: bool = True,
+    json_mode: bool = False,
 ) -> int:
     """Verify a miner code submission loaded dynamically from a file."""
     if not code_path.exists():
-        print(f"Error: File '{code_path}' does not exist.", file=sys.stderr)
+        err_msg = f"Error: File '{code_path}' does not exist."
+        if json_mode:
+            print(json.dumps({"error": err_msg, "passed": False}))
+        else:
+            print(err_msg, file=sys.stderr)
         return 1
 
     code = code_path.read_text(encoding="utf-8")
@@ -125,7 +131,18 @@ def verify_file(
         expected_output=expected_output,
     )
 
-    if verbose:
+    if json_mode:
+        data = {
+            "task_id": receipt.task_id,
+            "status": "CERTIFIED" if passed else "REJECTED",
+            "passed": passed,
+            "validator_id": receipt.validator_id,
+            "epoch": receipt.epoch,
+            "signature": receipt.signature,
+            "timestamp_ns": receipt.timestamp_ns,
+        }
+        print(json.dumps(data, indent=2))
+    elif verbose:
         status_str = "CERTIFIED" if passed else "REJECTED"
         print(f"Task: {task_id} | Status: {status_str} | Sig: {receipt.signature[:24]}...")
 
@@ -139,6 +156,7 @@ def main() -> None:
     parser.add_argument("--task-id", type=str, default="task-custom-01", help="Task identifier")
     parser.add_argument("--input", type=int, default=10, help="Test input integer")
     parser.add_argument("--expected", type=int, default=55, help="Expected output integer")
+    parser.add_argument("--json", action="store_true", help="Output machine-readable JSON receipt")
     parser.add_argument("--quiet", action="store_true", help="Quiet mode")
     args = parser.parse_args()
 
@@ -150,6 +168,7 @@ def main() -> None:
                 test_input=args.input,
                 expected_output=args.expected,
                 verbose=not args.quiet,
+                json_mode=args.json,
             )
         )
 

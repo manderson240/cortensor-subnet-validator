@@ -7,6 +7,7 @@ OpenMinion 0.1 SDK (`openminion.Agent` and `openminion.tool`).
 from __future__ import annotations
 
 import os
+import signal
 import time
 from typing import Any
 
@@ -64,9 +65,22 @@ SAFE_BUILTINS = {
 }
 
 
+class ExecutionTimeoutError(Exception):
+    """Raised when miner code execution exceeds the allocated CPU budget."""
+
+
+def _timeout_handler(signum: int, frame: Any) -> None:
+    raise ExecutionTimeoutError("Execution timed out (CPU budget exceeded).")
+
+
 @tool
-def execute_test_case(code: str, test_input: int, expected_output: int) -> dict[str, Any]:
-    """Execute a safe pure function against an input-output test case.
+def execute_test_case(
+    code: str,
+    test_input: int,
+    expected_output: int,
+    timeout_seconds: float = 1.0,
+) -> dict[str, Any]:
+    """Execute a safe pure function against an input-output test case with timeout defense.
 
     Parameters
     ----------
@@ -76,6 +90,8 @@ def execute_test_case(code: str, test_input: int, expected_output: int) -> dict[
         Input integer to test.
     expected_output : int
         Expected output integer.
+    timeout_seconds : float, optional
+        Maximum CPU execution time allowed in seconds (default: 1.0).
 
     Returns
     -------
@@ -92,6 +108,17 @@ def execute_test_case(code: str, test_input: int, expected_output: int) -> dict[
 
     t0 = time.perf_counter()
     namespace: dict[str, Any] = {}
+
+    # Set up signal-based alarm if available in current thread
+    has_alarm = hasattr(signal, "SIGALRM")
+    prev_handler = None
+    if has_alarm:
+        try:
+            prev_handler = signal.signal(signal.SIGALRM, _timeout_handler)
+            signal.setitimer(signal.ITIMER_REAL, timeout_seconds)
+        except ValueError:
+            has_alarm = False
+
     try:
         exec(code, {"__builtins__": SAFE_BUILTINS}, namespace)  # noqa: S102
         fn = namespace.get("solution")
@@ -109,6 +136,13 @@ def execute_test_case(code: str, test_input: int, expected_output: int) -> dict[
     except Exception as exc:
         dt_ms = (time.perf_counter() - t0) * 1000.0
         return {"passed": False, "error": str(exc), "latency_ms": dt_ms}
+    finally:
+        if has_alarm and prev_handler is not None:
+            try:
+                signal.setitimer(signal.ITIMER_REAL, 0.0)
+                signal.signal(signal.SIGALRM, prev_handler)
+            except ValueError:
+                pass
 
 
 @tool
