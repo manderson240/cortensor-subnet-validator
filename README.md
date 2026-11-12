@@ -78,6 +78,7 @@ All 9 unit tests pass in $<1$ second with zero network or paid API requirements.
 
 ## 🏆 Hackathon Deliverables
 
+- **Automated 1080p Pitch Video**: [`docs/cortensor_pitch_demo.mp4`](docs/cortensor_pitch_demo.mp4) (Full 85s demonstration generated headlessly via `python3 scripts/generate_pitch_video.py`)
 - **OpenMinion Feedback Report (25% Rubric)**: [`docs/cortensor_openminion_feedback_report.md`](docs/cortensor_openminion_feedback_report.md)
 - **Bonus Bug Report**: [OpenMinion Issue #733](https://github.com/openminion/openminion/issues/733) — *Direct import of openminion.modules.tool.executor fails with circular import on ToolExecutionBatch*
 - **Bonus Fix PR**: [OpenMinion Pull Request #734](https://github.com/openminion/openminion/pull/734) — *fix(tool): defer ToolSpec resolution in executor to break circular import*
