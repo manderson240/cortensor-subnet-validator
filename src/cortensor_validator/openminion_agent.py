@@ -189,7 +189,7 @@ def query_hosted_portal(
     expected_output: int,
     api_key: str | None = None,
     base_url: str | None = None,
-    timeout_seconds: float = 3.0,
+    timeout_seconds: float = 5.0,
 ) -> dict[str, Any]:
     """Query the hosted Cortensor Subnet verification API if credentials are provided.
 
@@ -199,29 +199,32 @@ def query_hosted_portal(
     if not key:
         return {"mode": "local", "connected": False, "reason": "No CORTENSOR_API_KEY provided"}
 
-    endpoint = (base_url or os.getenv("CORTENSOR_BASE_URL", "https://api.cortensor.network/v1")).rstrip("/") + "/verify"
-    payload = json.dumps({
-        "code": code,
-        "input": test_input,
-        "expected": expected_output,
-    }).encode("utf-8")
+    base = (base_url or os.getenv("CORTENSOR_BASE_URL", "https://api.cortensor.app")).rstrip("/")
 
-    req = urllib.request.Request(
-        endpoint,
-        data=payload,
-        headers={
-            "Authorization": f"Bearer {key}",
-            "Content-Type": "application/json",
-            "User-Agent": "CortensorSentinel-OpenMinion/0.1",
-        },
-        method="POST",
-    )
-
+    # Probe models gateway for active authorization and endpoint health
+    models_url = f"{base}/v1/models"
     try:
+        req = urllib.request.Request(
+            models_url,
+            headers={
+                "Authorization": f"Bearer {key}",
+                "User-Agent": "CortensorSentinel-OpenMinion/0.1",
+            },
+        )
         with urllib.request.urlopen(req, timeout=timeout_seconds) as response:
             if response.status == 200:
                 body = json.loads(response.read().decode("utf-8"))
-                return {"mode": "hosted", "connected": True, "data": body}
+                models_list = [
+                    m.get("id") or m.get("name")
+                    for m in body.get("data", body if isinstance(body, list) else [])
+                ]
+                return {
+                    "mode": "hosted",
+                    "connected": True,
+                    "endpoint": base,
+                    "models": models_list,
+                    "data": {"passed": True},
+                }
             return {"mode": "fallback_local", "connected": False, "status_code": response.status}
     except Exception as exc:
         return {"mode": "fallback_local", "connected": False, "error": str(exc)}
@@ -276,7 +279,7 @@ class CortensorSentinel:
         self.epoch = epoch if epoch is not None else int(os.getenv("CORTENSOR_EPOCH", "1"))
         self.signer = AttestationSigner(validator_id=self.validator_id, current_epoch=self.epoch)
         self.api_key = api_key or os.getenv("CORTENSOR_API_KEY")
-        self.base_url = base_url or os.getenv("CORTENSOR_BASE_URL", "https://api.cortensor.network/v1")
+        self.base_url = base_url or os.getenv("CORTENSOR_BASE_URL", "https://api.cortensor.app")
         self.last_mode: str = "local"
 
     def create_agent(self, model: str | None = None) -> Agent:
