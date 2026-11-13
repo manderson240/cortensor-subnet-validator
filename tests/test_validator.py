@@ -39,6 +39,20 @@ def test_code_safety_rejects_forbidden_builtins() -> None:
     assert any("Forbidden builtin call: 'eval()'" in v for v in res.violations)
 
 
+def test_code_safety_rejects_obfuscated_dynamic_imports() -> None:
+    code = "def solution(x: str) -> None:\n    getattr(__builtins__, 'eval')(x)\n"
+    res = verify_code_safety(code)
+    assert res.valid is False
+    assert any("Forbidden builtin call: 'getattr()'" in v or "Forbidden variable access: '__builtins__'" in v for v in res.violations)
+
+
+def test_code_safety_rejects_sandbox_breakout_attributes() -> None:
+    code = "def solution(x: int) -> int:\n    classes = ().__class__.__bases__[0].__subclasses__()\n    return len(classes)\n"
+    res = verify_code_safety(code)
+    assert res.valid is False
+    assert any("Forbidden attribute access: '__class__'" in v or "Forbidden attribute access: '__subclasses__'" in v for v in res.violations)
+
+
 def test_code_safety_rejects_syntax_errors() -> None:
     code = "def solution(x:\n    return x\n"
     res = verify_code_safety(code)

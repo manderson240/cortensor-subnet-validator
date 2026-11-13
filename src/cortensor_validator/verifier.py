@@ -19,6 +19,9 @@ FORBIDDEN_CALLS = frozenset({
     "open",
     "input",
     "breakpoint",
+    "getattr",
+    "setattr",
+    "delattr",
 })
 
 FORBIDDEN_MODULES = frozenset({
@@ -32,6 +35,21 @@ FORBIDDEN_MODULES = frozenset({
     "httpx",
     "pty",
     "ctypes",
+    "importlib",
+    "pickle",
+    "marshal",
+    "shelve",
+    "types",
+})
+
+FORBIDDEN_ATTRIBUTES = frozenset({
+    "__subclasses__",
+    "__bases__",
+    "__class__",
+    "__globals__",
+    "__builtins__",
+    "__dict__",
+    "__code__",
 })
 
 
@@ -91,6 +109,16 @@ def verify_code_safety(code_str: str) -> SafetyCheckResult:
         elif isinstance(node, ast.Call):
             if isinstance(node.func, ast.Name) and node.func.id in FORBIDDEN_CALLS:
                 violations.append(f"Forbidden builtin call: '{node.func.id}()'")
+
+        # Check attribute access (sandbox escape defense)
+        elif isinstance(node, ast.Attribute):
+            if node.attr in FORBIDDEN_ATTRIBUTES:
+                violations.append(f"Forbidden attribute access: '{node.attr}'")
+
+        # Check dangerous variable names
+        elif isinstance(node, ast.Name):
+            if node.id in {"__builtins__", "__import__", "importlib"}:
+                violations.append(f"Forbidden variable access: '{node.id}'")
 
     dt_ms = (time.perf_counter() - t0) * 1000.0
     return SafetyCheckResult(
