@@ -34,6 +34,137 @@ OpenMinion 0.1 Python SDK / Subnet Task Verification Track
 
 ### 5. Detailed Project Description (Markdown for DoraHacks Form)
 
+### System Architecture & Interaction Flow
+
+#### Subnet Task Sentinel Architecture
+```mermaid
+flowchart TD
+    subgraph MinerLayer["Decentralized Compute Miners (Cortensor Subnet)"]
+        MinerA["Miner Node Alpha"]
+        MinerB["Miner Node Beta (Adversarial)"]
+        MinerProposal["Code Solution Proposal (.py)"]
+    end
+
+    subgraph SentinelNode["Cortensor Task Sentinel (OpenMinion 0.1 SDK)"]
+        TaskIngestion["Task Ingestion Controller"]
+        
+        subgraph SecurityGate["Zero-Token Deterministic AST Guard"]
+            ASTParser["Python AST Node Visitor (<0.2ms)"]
+            ForbiddenCheck["Forbidden Call Trap (os, subprocess, socket)"]
+            DunderCheck["Dunder Breakout Guard (__class__, eval)"]
+        end
+
+        subgraph TestSandbox["Bounded CPU Test Runner"]
+            Timer["CPU Timeout Guard (signal.setitimer)"]
+            IsolatedNamespace["Isolated Global/Local Namespace"]
+            AssertVerifier["Test Case Assertion Verifier"]
+        end
+
+        subgraph CryptoEngine["Cryptographic Attestation Engine"]
+            HMACSigner["HMAC-SHA256 Receipt Signer"]
+            JSONFormatter["Machine-Readable CLI Formatter (--json)"]
+        end
+    end
+
+    subgraph ConsensusLayer["Cortensor Subnet Consensus & Weight Engine"]
+        ConsensusEngine["Subnet Consensus Aggregator"]
+        WeightEmission["Yuma Consensus Weight Distribution"]
+    end
+
+    MinerA -->|"Submit Solution Proposal"| TaskIngestion
+    MinerB -->|"Submit Malicious Exploit Code"| TaskIngestion
+    
+    TaskIngestion --> ASTParser
+    ASTParser --> ForbiddenCheck & DunderCheck
+    
+    ForbiddenCheck & DunderCheck -->|"Exploit Detected (0 tokens, <0.2ms)"| MinerB
+    ForbiddenCheck & DunderCheck -->|"SAFE: Proceed to Verification"| Timer
+    
+    Timer --> IsolatedNamespace --> AssertVerifier
+    AssertVerifier -->|"Test Passed"| HMACSigner
+    HMACSigner --> JSONFormatter
+    JSONFormatter -->|"Signed Attestation Receipt"| ConsensusEngine
+    ConsensusEngine --> WeightEmission
+
+    classDef miner fill:#1e1e2e,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4;
+    classDef sentinel fill:#181825,stroke:#89b4fa,stroke-width:2px,color:#cdd6f4;
+    classDef security fill:#313244,stroke:#f38ba8,stroke-width:2px,color:#cdd6f4;
+    classDef sandbox fill:#313244,stroke:#a6e3a1,stroke-width:2px,color:#cdd6f4;
+    classDef consensus fill:#181825,stroke:#f9e2af,stroke-width:2px,color:#cdd6f4;
+
+    class MinerLayer,MinerA,MinerB,MinerProposal miner;
+    class SentinelNode,TaskIngestion,CryptoEngine,HMACSigner,JSONFormatter sentinel;
+    class SecurityGate,ASTParser,ForbiddenCheck,DunderCheck security;
+    class TestSandbox,Timer,IsolatedNamespace,AssertVerifier sandbox;
+    class ConsensusLayer,ConsensusEngine,WeightEmission consensus;
+```
+
+#### Task Ingestion & Verification Sequence
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Miner as Subnet Compute Miner
+    participant Ingestion as Sentinel Task Ingestor
+    participant AST as Deterministic AST Verifier
+    participant Sandbox as Bounded Test Runner
+    participant Signer as HMAC Attestation Signer
+    participant Consensus as Cortensor Subnet Consensus
+
+    Miner->>Ingestion: Submit Solution Code (taskId, sourceCode)
+    activate Ingestion
+    Ingestion->>AST: audit_code_safety(sourceCode)
+    activate AST
+    
+    alt Contains Forbidden Imports / Dunder Exploits
+        AST-->>Ingestion: BLOCKED (Forbidden Symbol Detected)
+        Ingestion-->>Miner: HTTP 403 / REJECTED (Zero Compute Burned)
+    else Pure Safe Syntax Verified
+        AST-->>Ingestion: PASSED (is_safe = True, <0.2ms)
+        deactivate AST
+        
+        Ingestion->>Sandbox: execute_test_case(sourceCode, input, expected)
+        activate Sandbox
+        Sandbox->>Sandbox: Execute with signal.setitimer CPU Timeout
+        Sandbox-->>Ingestion: PASSED (output == expected)
+        deactivate Sandbox
+        
+        Ingestion->>Signer: create_attestation_receipt(taskId, CERTIFIED)
+        activate Signer
+        Signer->>Signer: Compute HMAC-SHA256 Signature
+        Signer-->>Ingestion: Signed JSON Receipt
+        deactivate Signer
+        
+        Ingestion->>Consensus: Broadcast Attestation Receipt
+        activate Consensus
+        Consensus-->>Consensus: Update Miner Weights in Epoch Consensus
+        deactivate Consensus
+    end
+    deactivate Ingestion
+```
+
+#### Miner Verification State Machine
+```mermaid
+stateDiagram-v2
+    [*] --> Proposal_Submitted: Miner Submits Task Proposal
+    Proposal_Submitted --> AST_Auditing: Ingest into Sentinel Pipeline
+    
+    AST_Auditing --> Exploit_Rejected: Forbidden Symbol / Dangerous Call
+    AST_Auditing --> Sandbox_Testing: AST Safe (<0.2ms)
+    
+    Sandbox_Testing --> Execution_Timeout: Exceeded CPU Time Budget
+    Sandbox_Testing --> Logic_Failed: Assertion Mismatch (Output != Expected)
+    Sandbox_Testing --> Verification_Certified: All Test Assertions Succeeded
+    
+    Verification_Certified --> Attestation_Signed: HMAC-SHA256 Generated
+    Attestation_Signed --> Consensus_Broadcast: Emitted to Subnet Weights
+    
+    Exploit_Rejected --> [*]: Penalty Logged (Zero Compute Burned)
+    Execution_Timeout --> [*]: Zero Weight Awarded
+    Logic_Failed --> [*]: Task Rejected
+    Consensus_Broadcast --> [*]: Miner Rewarded
+```
+
+
 ```markdown
 # Cortensor Task Sentinel
 

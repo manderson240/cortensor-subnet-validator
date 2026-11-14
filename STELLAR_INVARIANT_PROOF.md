@@ -34,11 +34,34 @@ All critical protocol invariants have been mathematically formulated into a Depe
 
 ```mermaid
 flowchart TD
-    ROOT["Root Protocol Invariants"] --> LEMMA_CORTENSOR_1["Byzantine Weight Resilience & Capping"]
-    LEMMA_CORTENSOR_1["Byzantine Weight Resilience & Capping"] --> LEMMA_CORTENSOR_2["Deterministic Task Output Verification"]
-    LEMMA_CORTENSOR_1["Byzantine Weight Resilience & Capping"] --> LEMMA_CORTENSOR_3["Zero-Division & Sparse Miner Invariant"]
-    LEMMA_CORTENSOR_2["Deterministic Task Output Verification"] --> LEMMA_CORTENSOR_4["OpenMinion 0.1 SDK Protocol Compliance"]
-    LEMMA_CORTENSOR_3["Zero-Division & Sparse Miner Invariant"] --> LEMMA_CORTENSOR_4["OpenMinion 0.1 SDK Protocol Compliance"]
+    subgraph Foundation["Verification Root (Stellar Colosseum Harness arXiv:2609.15983)"]
+        ROOT["Root Protocol Invariants: C_sys = 0.9586"]
+    end
+
+    subgraph ASTSecurity["Static Analysis & Resource Invariants"]
+        LEMMA_CORTENSOR_1["LEMMA_CORTENSOR_1: Zero-Token AST Defense<br/><i>O(|AST|) determinism, 100% exploit detection before execution</i><br/><b>[STATUS: VERIFIED (Sub-millisecond)]</b>"]
+        LEMMA_CORTENSOR_2["LEMMA_CORTENSOR_2: Bounded Execution Timeout<br/><i>Strict CPU timer signal guarantees termination, DoS defense</i><br/><b>[STATUS: VERIFIED (signal.setitimer)]</b>"]
+    end
+
+    subgraph ConsensusIntegrity["Attestation & Weight Monotonicity Invariants"]
+        LEMMA_CORTENSOR_3["LEMMA_CORTENSOR_3: Cryptographic Attestation Non-Forgeability<br/><i>HMAC-SHA256 signature guarantees validator origin authenticity</i><br/><b>[STATUS: VERIFIED (HMAC-SHA256)]</b>"]
+        LEMMA_CORTENSOR_4["LEMMA_CORTENSOR_4: Simplex Weight Normalization Invariant<br/><i>Sum of miner weights in consensus epoch strictly equals 1.0</i><br/><b>[STATUS: VERIFIED (33% BFT Simplex)]</b>"]
+    end
+
+    ROOT --> LEMMA_CORTENSOR_1
+    ROOT --> LEMMA_CORTENSOR_2
+    LEMMA_CORTENSOR_1 --> LEMMA_CORTENSOR_3
+    LEMMA_CORTENSOR_2 --> LEMMA_CORTENSOR_3
+    LEMMA_CORTENSOR_1 --> LEMMA_CORTENSOR_4
+    LEMMA_CORTENSOR_3 --> LEMMA_CORTENSOR_4
+
+    classDef foundation fill:#1e1e2e,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4;
+    classDef ast fill:#181825,stroke:#f38ba8,stroke-width:2px,color:#cdd6f4;
+    classDef consensus fill:#181825,stroke:#a6e3a1,stroke-width:2px,color:#cdd6f4;
+
+    class Foundation,ROOT foundation;
+    class ASTSecurity,LEMMA_CORTENSOR_1,LEMMA_CORTENSOR_2 ast;
+    class ConsensusIntegrity,LEMMA_CORTENSOR_3,LEMMA_CORTENSOR_4 consensus;
 ```
 
 ---
