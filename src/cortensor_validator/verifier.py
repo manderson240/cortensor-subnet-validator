@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import ast
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 FORBIDDEN_CALLS = frozenset({
@@ -58,7 +58,7 @@ class SafetyCheckResult:
     """Result of static AST safety inspection."""
 
     valid: bool
-    violations: tuple[str, ...] = field(default_factory=tuple)
+    violations: tuple[str, ...] = ()
     ast_nodes_scanned: int = 0
     latency_ms: float = 0.0
 
