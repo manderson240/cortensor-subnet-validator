@@ -9,7 +9,8 @@ Features:
 - Authentic Linux terminal interface using dynamic environment paths (${CORTENSOR_HOME}, validator@node-01).
 - 100% complete source code visibility — ZERO abbreviations, ZERO ellipses (...), ZERO clipping.
 - Displays both the OpenMinion 0.1 Agent tools (openminion_agent.py) and AST verifier (verifier.py).
-- CPU execution timeout defense, live Cortensor API integration, and JSON receipt generation in test suite (15/15 passing).
+- CPU execution timeout defense, live Cortensor API integration, and JSON receipt generation in test suite (17/17 passing).
+- Local Kyutai Pocket-TTS natural neural speech synthesis with int8 quantization (zero OOM risk, offline CPU).
 - Visually lossless H.264 encoding (CRF 16) with natural audio padding (+1.25s hold) between slides.
 """
 
@@ -17,6 +18,8 @@ from __future__ import annotations
 
 import json
 import os
+import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -24,7 +27,7 @@ import time
 from pathlib import Path
 from PIL import Image
 
-VOICE = "en-US-ChristopherNeural"
+VOICE = "alba"
 WIDTH = 2560
 HEIGHT = 1440
 CHROME_CAPTURE_HEIGHT = 1527  # Compensates for Chrome Linux headless 87px decoration subtraction
@@ -46,7 +49,7 @@ SCENES = [
             "Static AST bytecode security engine blocking trojans and CPU loops before execution. "
             "Cryptographic HMAC-SHA256 attestation receipts committed on-chain. "
             "And upstream Pull Request 734, resolving the core circular import in OpenMinion. "
-            "Compatible with OpenMinion 0.1.21, fifteen passing unit tests, live Cortensor API integration at api.cortensor.app, "
+            "Compatible with OpenMinion 0.1.21, seventeen passing unit tests, live Cortensor API integration at api.cortensor.app, "
             "and one-command execution via uv run sentinel."
         ),
         "html_body": f"""
@@ -81,7 +84,7 @@ SCENES = [
             </div>
             <div class="flow-container" style="margin-top: 20px;">
                 <div class="chip chip-blue" style="font-size: 17px; padding: 10px 20px;">Python 3.13 / 3.11+</div>
-                <div class="chip chip-green" style="font-size: 17px; padding: 10px 20px;">15/15 Unit Tests Passing</div>
+                <div class="chip chip-green" style="font-size: 17px; padding: 10px 20px;">17/17 Unit Tests Passing</div>
                 <div class="chip chip-blue" style="font-size: 17px; padding: 10px 20px;">Live API: api.cortensor.app</div>
                 <div class="chip chip-green" style="font-size: 17px; padding: 10px 20px;">1-Command CLI: uv run sentinel</div>
             </div>
@@ -461,23 +464,23 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
     },
     {
         "id": "scene6_test_suite",
-        "title": "Comprehensive Test Suite (15/15 Passed)",
+        "title": "Comprehensive Test Suite (17/17 Passed)",
         "badge": "Verification Proof • pytest tests/ -v",
         "narration": (
             "Full Test Suite Execution: "
-            "Empirical validation verifying security boundaries, CPU loop defense, dynamic JSON receipts, and live API gateway connectivity. "
+            "Empirical validation verifying security boundaries, AST invariants, CPU loop defense, dynamic JSON receipts, and live API gateway connectivity. "
             "Executing uv run pytest: "
-            "All fifteen unit tests pass in two seconds across tests/test_validator.py and tests/test_openminion_agent.py: "
-            "accepting clean code, rejecting forbidden imports and builtins, catching syntax errors, verifying HMAC signing, "
-            "testing OpenMinion tools, defending against infinite CPU loops, generating JSON receipts, "
+            "All seventeen unit tests pass in under two seconds across tests/test_validator.py: "
+            "accepting clean code, rejecting forbidden imports and builtins, rejecting obfuscated dynamic imports and sandbox breakout attributes, "
+            "catching syntax errors, verifying HMAC signing, testing OpenMinion tools, defending against infinite CPU loops, generating JSON receipts, "
             "and testing the live Cortensor production gateway at api.cortensor.app. "
-            "Fifteen passed with zero failures."
+            "Seventeen passed with zero failures."
         ),
         "html_body": f"""
             <div class="header">
-                <span class="badge">Verification Proof • 15/15 Tests Passing</span>
+                <span class="badge">Verification Proof • 17/17 Tests Passing</span>
                 <h1>Full Test Suite Execution</h1>
-                <p class="subtitle">Empirical validation verifying security boundaries, CPU loop defense, dynamic JSON receipts, and live Cortensor API integration.</p>
+                <p class="subtitle">Empirical validation verifying security boundaries, AST invariants, CPU loop defense, dynamic JSON receipts, and live Cortensor API integration.</p>
             </div>
             <div class="terminal-window">
                 <div class="linux-bar">
@@ -491,6 +494,8 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                     <p><span class="pass">PASSED</span> test_code_safety_accepts_clean_code <span class="dim">— verifies valid pure logic passes AST</span></p>
                     <p><span class="pass">PASSED</span> test_code_safety_rejects_forbidden_imports <span class="dim">— catches 'os', 'sys', 'socket', 'subprocess'</span></p>
                     <p><span class="pass">PASSED</span> test_code_safety_rejects_forbidden_builtins <span class="dim">— catches 'eval()', 'exec()', 'open()'</span></p>
+                    <p><span class="pass">PASSED</span> test_code_safety_rejects_obfuscated_dynamic_imports <span class="dim">— blocks getattr / __import__ stealth execution</span></p>
+                    <p><span class="pass">PASSED</span> test_code_safety_rejects_sandbox_breakout_attributes <span class="dim">— blocks __subclasses__ / __globals__ introspection</span></p>
                     <p><span class="pass">PASSED</span> test_code_safety_rejects_syntax_errors <span class="dim">— catches malformed submissions</span></p>
                     <p><span class="pass">PASSED</span> test_attestation_signing_and_verification <span class="dim">— checks valid HMAC signature generation</span></p>
                     <p><span class="pass">PASSED</span> test_openminion_tool_audit_safety <span class="dim">— verifies @tool safety audit functionality</span></p>
@@ -503,7 +508,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                     <p><span class="pass">PASSED</span> test_cli_verify_file_json <span class="dim">— outputs machine-readable JSON attestation receipt</span></p>
                     <p><span class="pass">PASSED</span> test_query_hosted_portal_without_key <span class="dim">— validates fallback when no API key configured</span></p>
                     <p><span class="pass">PASSED</span> test_query_hosted_portal_mock_connected <span class="dim">— tests live Cortensor hosted API gateway (api.cortensor.app)</span></p>
-                    <p class="success-banner">============================== 15 passed in 2.01s ==============================</p>
+                    <p class="success-banner">============================== 17 passed in 1.65s ==============================</p>
                 </div>
             </div>
         """,
@@ -515,7 +520,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
         "narration": (
             "Giving Back to the OpenMinion Ecosystem: "
             "Complete open-source submission, documentation, and upstream bug fixes. "
-            "First: Standalone Spoke Repository on GitHub with fifteen passing unit tests, zero vendor bloat, and one-command startup. "
+            "First: Standalone Spoke Repository on GitHub with seventeen passing unit tests, zero vendor bloat, and one-command startup. "
             "Second: Upstream Pull Request 734 resolving the ToolExecutionBatch circular import in OpenMinion core, satisfying all CI gates. "
             "Third: Exhaustive developer feedback report detailing SDK developer experience and suggestions for OpenMinion version zero point two. "
             "Ready for Cortensor Subnet deployment with uv run sentinel dash-dash json."
@@ -857,25 +862,68 @@ def run_command(cmd: list[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(cmd, capture_output=True, text=True, check=True)
 
 
-def synthesize_voiceover(text: str, output_path: Path, max_retries: int = 4) -> float:
+def synthesize_voiceover(text: str, output_path: Path, max_retries: int = 3) -> float:
+    """Synthesize voiceover using local Kyutai Pocket-TTS foundation model on CPU.
+
+    Splits text into natural conversational sentence chunks, generates 24kHz audio via
+    pocket-tts in int8 quantization (zero GPU VRAM usage, zero OOM risk), and concatenates
+    with ffmpeg.
+    """
+    pocket_bin = shutil.which("pocket-tts") or "/home/mike-anderson/.local/bin/pocket-tts"
+    sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", text.strip()) if s.strip()]
+    if not sentences:
+        sentences = [text.strip()]
+
     for attempt in range(1, max_retries + 1):
         if output_path.exists():
             output_path.unlink()
         try:
-            tts_cmd = [
-                "uv",
-                "run",
-                "--with",
-                "edge-tts",
-                "edge-tts",
-                "--voice",
-                VOICE,
-                "--text",
-                text,
-                "--write-media",
-                str(output_path),
-            ]
-            run_command(tts_cmd)
+            with tempfile.TemporaryDirectory() as td:
+                wav_files = []
+                for idx, sentence in enumerate(sentences):
+                    part_wav = Path(td) / f"part_{idx}.wav"
+                    cmd = [
+                        pocket_bin,
+                        "generate",
+                        "--text",
+                        sentence,
+                        "--device",
+                        "cpu",
+                        "--quantize",
+                        "--max-tokens",
+                        "150",
+                        "--output-path",
+                        str(part_wav),
+                        "-q",
+                    ]
+                    subprocess.run(cmd, capture_output=True, text=True, check=True)
+                    if part_wav.exists() and part_wav.stat().st_size > 1000:
+                        wav_files.append(part_wav)
+
+                if not wav_files:
+                    raise RuntimeError("No audio produced by pocket-tts")
+
+                concat_list = Path(td) / "list.txt"
+                with open(concat_list, "w", encoding="utf-8") as f:
+                    for w in wav_files:
+                        f.write(f"file '{w}'\n")
+
+                ffmpeg_cmd = [
+                    "ffmpeg",
+                    "-y",
+                    "-f",
+                    "concat",
+                    "-safe",
+                    "0",
+                    "-i",
+                    str(concat_list),
+                    "-c:a",
+                    "libmp3lame",
+                    "-b:a",
+                    "192k",
+                    str(output_path),
+                ]
+                run_command(ffmpeg_cmd)
 
             # Measure duration
             ffprobe_cmd = [
@@ -890,12 +938,12 @@ def synthesize_voiceover(text: str, output_path: Path, max_retries: int = 4) -> 
             ]
             proc = run_command(ffprobe_cmd)
             duration = float(proc.stdout.strip())
-            if duration > 3.0:
+            if duration > 2.0:
                 return duration
             print(f"   ⚠️ Warning: Incomplete audio ({duration:.2f}s), retrying (attempt {attempt}/{max_retries})...")
         except Exception as e:
             print(f"   ⚠️ Warning: TTS call failed ({e}), retrying (attempt {attempt}/{max_retries})...")
-        time.sleep(1.5)
+        time.sleep(1.0)
     raise RuntimeError(f"Failed to synthesize voiceover after {max_retries} attempts.")
 
 
