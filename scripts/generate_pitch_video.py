@@ -48,7 +48,7 @@ SCENES = [
             "Sub-millisecond deterministic verification cycles with zero cloud LLM token cost. "
             "Static AST bytecode security engine blocking trojans and CPU loops before execution. "
             "Cryptographic HMAC-SHA256 attestation receipts committed on-chain. "
-            "And upstream Pull Request 734, resolving the core circular import in OpenMinion. "
+            "And Upstream Issue 733 filed and resolved via our Pull Request 734, breaking the core ToolExecutionBatch circular import in OpenMinion. "
             "Compatible with OpenMinion 0.1.21, seventeen passing unit tests, live Cortensor API integration at api.cortensor.app, "
             "and one-command execution via uv run sentinel."
         ),
@@ -78,15 +78,15 @@ SCENES = [
                 </div>
                 <div class="card" style="text-align: center; border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08);">
                     <div class="card-icon">🛠️</div>
-                    <h3 style="font-size: 30px; color: #f59e0b; margin-bottom: 8px;">Upstream PR #734</h3>
-                    <p style="font-size: 18px; color: #cbd5e1;">Resolved core circular import in OpenMinion framework</p>
+                    <h3 style="font-size: 30px; color: #f59e0b; margin-bottom: 8px;">Issue #733 → PR #734</h3>
+                    <p style="font-size: 18px; color: #cbd5e1;">Filed bug Issue #733 &amp; fixed core circular import in PR #734</p>
                 </div>
             </div>
             <div class="flow-container" style="margin-top: 20px;">
                 <div class="chip chip-blue" style="font-size: 17px; padding: 10px 20px;">Python 3.13 / 3.11+</div>
                 <div class="chip chip-green" style="font-size: 17px; padding: 10px 20px;">17/17 Unit Tests Passing</div>
-                <div class="chip chip-blue" style="font-size: 17px; padding: 10px 20px;">Live API: api.cortensor.app</div>
-                <div class="chip chip-green" style="font-size: 17px; padding: 10px 20px;">1-Command CLI: uv run sentinel</div>
+                <div class="chip chip-green" style="font-size: 17px; padding: 10px 20px;">Upstream Fix: Issue #733 → PR #734</div>
+                <div class="chip chip-blue" style="font-size: 17px; padding: 10px 20px;">1-Command CLI: uv run sentinel</div>
             </div>
         """,
     },
@@ -515,13 +515,14 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
     },
     {
         "id": "scene7_ecosystem_pr",
-        "title": "Open Source & Upstream PR #734",
+        "title": "Open Source: Issue #733 & Upstream PR #734",
         "badge": "Ecosystem Impact & Leadership",
         "narration": (
             "Giving Back to the OpenMinion Ecosystem: "
             "Complete open-source submission, documentation, and upstream bug fixes. "
             "First: Standalone Spoke Repository on GitHub with seventeen passing unit tests, zero vendor bloat, and one-command startup. "
-            "Second: Upstream Pull Request 734 resolving the ToolExecutionBatch circular import in OpenMinion core, satisfying all CI gates. "
+            "Second: We discovered and filed Upstream Issue 733 for the direct executor circular import bug on ToolExecutionBatch, "
+            "and immediately resolved it in Upstream Pull Request 734 by deferring ToolSpec resolution, passing all 559 upstream tests and strict CI typing gates. "
             "Third: Exhaustive developer feedback report detailing SDK developer experience and suggestions for OpenMinion version zero point two. "
             "Ready for Cortensor Subnet deployment with uv run sentinel dash-dash json."
         ),
@@ -529,20 +530,20 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
             <div class="header">
                 <span class="badge">Ecosystem Leadership & Upstream Contributions</span>
                 <h1>Giving Back to the OpenMinion Ecosystem</h1>
-                <p class="subtitle">Complete open-source submission, documentation, and upstream bugfixes.</p>
+                <p class="subtitle">Complete open-source submission, documentation, bug reporting (Issue #733), and upstream fix (PR #734).</p>
             </div>
             <div class="grid-3" style="margin-top: 24px;">
                 <div class="card">
                     <div class="card-icon">🚀</div>
                     <h3>Standalone Spoke Repo</h3>
-                    <p>Clean, decoupled repository with 15 passing unit tests, zero vendor bloat, and 1-command startup.</p>
+                    <p>Clean, decoupled repository with 17/17 passing unit tests, zero vendor bloat, and 1-command startup.</p>
                     <div class="code-pill">github.com/manderson240/cortensor-subnet-validator</div>
                 </div>
                 <div class="card" style="border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.08);">
                     <div class="card-icon">🛠️</div>
-                    <h3 style="color: #22c55e;">Upstream PR #734</h3>
-                    <p>Resolved <code>ToolExecutionBatch</code> circular import in OpenMinion core; satisfied strict whole-tree typing ratchets.</p>
-                    <div class="code-pill">openminion/openminion#734 (All Gates Passed)</div>
+                    <h3 style="color: #22c55e;">Issue #733 &amp; Fix PR #734</h3>
+                    <p>Filed bug Issue #733 (<code>ToolExecutionBatch</code> circular import) &amp; fixed it in PR #734 (559 upstream tests + 4298/4298 mypy budget PASS).</p>
+                    <div class="code-pill">openminion#733 → openminion#734</div>
                 </div>
                 <div class="card">
                     <div class="card-icon">📝</div>

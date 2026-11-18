@@ -28,7 +28,8 @@ OpenMinion 0.1 Python SDK / Subnet Task Verification Track
 - **GitHub Repository**: `https://github.com/manderson240/cortensor-subnet-validator`
 - **Demo Video (2K QHD)**: Located at `docs/cortensor_pitch_demo.mp4` in repository (upload to YouTube/Loom as unlisted/public if URL required)
 - **Developer Feedback Report**: `https://github.com/manderson240/cortensor-subnet-validator/blob/main/docs/cortensor_openminion_feedback_report.md`
-- **Upstream Contribution**: `https://github.com/openminion/openminion/pull/734`
+- **Upstream Bug Report**: `https://github.com/openminion/openminion/issues/733`
+- **Upstream Fix PR**: `https://github.com/openminion/openminion/pull/734` (fixes `#733`)
 
 ---
 
@@ -178,8 +179,8 @@ Built with the official **OpenMinion 0.1 Python SDK** (`openminion.Agent` and `@
 3. **Epoch-Fenced Cryptographic Receipts**: Generates HMAC-SHA256 attestation receipts committed to the subnet mempool.
 4. **Hosted Portal Adapter**: Supports hosted Cortensor API routing (`CORTENSOR_API_KEY`) with automatic local AST fallback.
 
-### Upstream OpenMinion Contribution
-As part of our evaluation of the OpenMinion 0.1 SDK, we diagnosed and resolved a critical circular import between `Agent` and `AgentExecutor` in the upstream framework ([PR #734](https://github.com/openminion/openminion/pull/734)). We also authored a comprehensive 7-page developer feedback report ([`docs/cortensor_openminion_feedback_report.md`](docs/cortensor_openminion_feedback_report.md)) detailing SDK developer experience, serialization ergonomics, and AST hook recommendations.
+### Upstream OpenMinion Contributions (Issue #733 & Fix PR #734)
+As part of our evaluation of the OpenMinion 0.1 SDK, we diagnosed and filed the circular import defect between `openminion.modules.tool.executor` and `ToolExecutionBatch` ([Issue #733](https://github.com/openminion/openminion/issues/733)) and immediately opened the upstream fix ([PR #734](https://github.com/openminion/openminion/pull/734), resolving `#733`, passing all 559 upstream tests and whole-tree typing gates). We also authored a comprehensive 7-page developer feedback report ([`docs/cortensor_openminion_feedback_report.md`](docs/cortensor_openminion_feedback_report.md)) detailing SDK developer experience, serialization ergonomics, and AST hook recommendations.
 
 ### Key Performance Metrics
 - **Verification Cycle Latency**: < 0.2 ms AST inspection time (< 0.9 ms total execution)
