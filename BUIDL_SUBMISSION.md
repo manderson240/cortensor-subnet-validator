@@ -1,208 +1,95 @@
-# DoraHacks BUIDL Submission Guide: Cortensor Task Sentinel
+# DoraHacks BUIDL Submission: Cortensor Task Sentinel
 
 **Hackathon**: [Cortensor Hackathon #5 (DoraHacks ID: 2418)](https://dorahacks.io/hackathon/2418/detail)  
 **Track**: Subnet Task Verification Agent  
 **Deadline**: December 18, 2026, 23:59 UTC-8  
-**Repository**: `https://github.com/manderson240/cortensor-subnet-validator`  
+**Repository**: https://github.com/manderson240/cortensor-subnet-validator  
+
+This file mirrors what I entered in the DoraHacks form.
 
 ---
 
-## Copy-Paste Form Fields for DoraHacks
+## Form fields
 
-### 1. Project Name
+### Name
 ```text
 Cortensor Task Sentinel
 ```
 
-### 2. Tagline (Under 120 characters)
+### Brief description (120 characters max)
 ```text
 Autonomous Subnet Task Verification Agent built with OpenMinion 0.1 SDK and zero-token deterministic AST safety defense.
 ```
 
-### 3. Track Selection
+### Tags
 ```text
-OpenMinion 0.1 Python SDK / Subnet Task Verification Track
+AI > AI Agents
 ```
 
-### 4. Project Links
-- **GitHub Repository**: `https://github.com/manderson240/cortensor-subnet-validator`
-- **Build Logo (1024x1024 PNG)**: Located at `docs/cortensor_task_sentinel_logo.png` in repository
-- **Demo Video (2K QHD)**: Located at `docs/cortensor_pitch_demo.mp4` in repository (upload to YouTube/Loom as unlisted/public if URL required)
-- **Developer Feedback Report**: `https://github.com/manderson240/cortensor-subnet-validator/blob/main/docs/cortensor_openminion_feedback_report.md`
-- **Upstream Bug Report**: `https://github.com/openminion/openminion/issues/733`
-- **Upstream Fix PR**: `https://github.com/openminion/openminion/pull/734` (fixes `#733`)
+### Team
+```text
+Mike Anderson (Solo builder, github.com/manderson240)
+```
+
+### Links
+- GitHub: https://github.com/manderson240/cortensor-subnet-validator
+- Demo video: https://github.com/manderson240/cortensor-subnet-validator/raw/main/docs/cortensor_pitch_demo.mp4
+- SDK feedback report: https://github.com/manderson240/cortensor-subnet-validator/blob/main/docs/cortensor_openminion_feedback_report.md
+- Logo (1024x1024 PNG): `docs/cortensor_task_sentinel_logo.png`
+
+### Contact
+- Telegram: `manderson240`
+- Discord: `miked238725`
 
 ---
 
-### 5. Detailed Project Description (Markdown for DoraHacks Form)
+## Description
 
-### System Architecture & Interaction Flow
-
-#### Subnet Task Sentinel Architecture
-```mermaid
-flowchart TD
-    subgraph MinerLayer["Decentralized Compute Miners (Cortensor Subnet)"]
-        MinerA["Miner Node Alpha"]
-        MinerB["Miner Node Beta (Adversarial)"]
-        MinerProposal["Code Solution Proposal (.py)"]
-    end
-
-    subgraph SentinelNode["Cortensor Task Sentinel (OpenMinion 0.1 SDK)"]
-        TaskIngestion["Task Ingestion Controller"]
-        
-        subgraph SecurityGate["Zero-Token Deterministic AST Guard"]
-            ASTParser["Python AST Node Visitor (<0.2ms)"]
-            ForbiddenCheck["Forbidden Call Trap (os, subprocess, socket)"]
-            DunderCheck["Dunder Breakout Guard (__class__, eval)"]
-        end
-
-        subgraph TestSandbox["Bounded CPU Test Runner"]
-            Timer["CPU Timeout Guard (signal.setitimer)"]
-            IsolatedNamespace["Isolated Global/Local Namespace"]
-            AssertVerifier["Test Case Assertion Verifier"]
-        end
-
-        subgraph CryptoEngine["Cryptographic Attestation Engine"]
-            HMACSigner["HMAC-SHA256 Receipt Signer"]
-            JSONFormatter["Machine-Readable CLI Formatter (--json)"]
-        end
-    end
-
-    subgraph ConsensusLayer["Cortensor Subnet Consensus & Weight Engine"]
-        ConsensusEngine["Subnet Consensus Aggregator"]
-        WeightEmission["Yuma Consensus Weight Distribution"]
-    end
-
-    MinerA -->|"Submit Solution Proposal"| TaskIngestion
-    MinerB -->|"Submit Malicious Exploit Code"| TaskIngestion
-    
-    TaskIngestion --> ASTParser
-    ASTParser --> ForbiddenCheck & DunderCheck
-    
-    ForbiddenCheck & DunderCheck -->|"Exploit Detected (0 tokens, <0.2ms)"| MinerB
-    ForbiddenCheck & DunderCheck -->|"SAFE: Proceed to Verification"| Timer
-    
-    Timer --> IsolatedNamespace --> AssertVerifier
-    AssertVerifier -->|"Test Passed"| HMACSigner
-    HMACSigner --> JSONFormatter
-    JSONFormatter -->|"Signed Attestation Receipt"| ConsensusEngine
-    ConsensusEngine --> WeightEmission
-
-    classDef miner fill:#1e1e2e,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4;
-    classDef sentinel fill:#181825,stroke:#89b4fa,stroke-width:2px,color:#cdd6f4;
-    classDef security fill:#313244,stroke:#f38ba8,stroke-width:2px,color:#cdd6f4;
-    classDef sandbox fill:#313244,stroke:#a6e3a1,stroke-width:2px,color:#cdd6f4;
-    classDef consensus fill:#181825,stroke:#f9e2af,stroke-width:2px,color:#cdd6f4;
-
-    class MinerLayer,MinerA,MinerB,MinerProposal miner;
-    class SentinelNode,TaskIngestion,CryptoEngine,HMACSigner,JSONFormatter sentinel;
-    class SecurityGate,ASTParser,ForbiddenCheck,DunderCheck security;
-    class TestSandbox,Timer,IsolatedNamespace,AssertVerifier sandbox;
-    class ConsensusLayer,ConsensusEngine,WeightEmission consensus;
-```
-
-#### Task Ingestion & Verification Sequence
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Miner as Subnet Compute Miner
-    participant Ingestion as Sentinel Task Ingestor
-    participant AST as Deterministic AST Verifier
-    participant Sandbox as Bounded Test Runner
-    participant Signer as HMAC Attestation Signer
-    participant Consensus as Cortensor Subnet Consensus
-
-    Miner->>Ingestion: Submit Solution Code (taskId, sourceCode)
-    activate Ingestion
-    Ingestion->>AST: audit_code_safety(sourceCode)
-    activate AST
-    
-    alt Contains Forbidden Imports / Dunder Exploits
-        AST-->>Ingestion: BLOCKED (Forbidden Symbol Detected)
-        Ingestion-->>Miner: HTTP 403 / REJECTED (Zero Compute Burned)
-    else Pure Safe Syntax Verified
-        AST-->>Ingestion: PASSED (is_safe = True, <0.2ms)
-        deactivate AST
-        
-        Ingestion->>Sandbox: execute_test_case(sourceCode, input, expected)
-        activate Sandbox
-        Sandbox->>Sandbox: Execute with signal.setitimer CPU Timeout
-        Sandbox-->>Ingestion: PASSED (output == expected)
-        deactivate Sandbox
-        
-        Ingestion->>Signer: create_attestation_receipt(taskId, CERTIFIED)
-        activate Signer
-        Signer->>Signer: Compute HMAC-SHA256 Signature
-        Signer-->>Ingestion: Signed JSON Receipt
-        deactivate Signer
-        
-        Ingestion->>Consensus: Broadcast Attestation Receipt
-        activate Consensus
-        Consensus-->>Consensus: Update Miner Weights in Epoch Consensus
-        deactivate Consensus
-    end
-    deactivate Ingestion
-```
-
-#### Miner Verification State Machine
-```mermaid
-stateDiagram-v2
-    [*] --> Proposal_Submitted: Miner Submits Task Proposal
-    Proposal_Submitted --> AST_Auditing: Ingest into Sentinel Pipeline
-    
-    AST_Auditing --> Exploit_Rejected: Forbidden Symbol / Dangerous Call
-    AST_Auditing --> Sandbox_Testing: AST Safe (<0.2ms)
-    
-    Sandbox_Testing --> Execution_Timeout: Exceeded CPU Time Budget
-    Sandbox_Testing --> Logic_Failed: Assertion Mismatch (Output != Expected)
-    Sandbox_Testing --> Verification_Certified: All Test Assertions Succeeded
-    
-    Verification_Certified --> Attestation_Signed: HMAC-SHA256 Generated
-    Attestation_Signed --> Consensus_Broadcast: Emitted to Subnet Weights
-    
-    Exploit_Rejected --> [*]: Penalty Logged (Zero Compute Burned)
-    Execution_Timeout --> [*]: Zero Weight Awarded
-    Logic_Failed --> [*]: Task Rejected
-    Consensus_Broadcast --> [*]: Miner Rewarded
-```
-
-
-```markdown
 # Cortensor Task Sentinel
 
-### The Problem
-Decentralized AI subnets face a fundamental security dilemma: miners submit arbitrary algorithm proposals that validators must verify before paying rewards. Relying on slow, expensive cloud LLMs creates latency bottlenecks and exposes validator nodes to prompt injection, trojaned bytecode, and resource-exhaustion loops.
+### Why I built this
+In Cortensor subnets, miners submit code and task outputs that validators have to check before recording results. Sending raw miner code straight to an LLM is slow, costs tokens on submissions that are obviously broken, and exposes the validator node to unsafe calls (`eval`, `exec`, `os.system`, `subprocess`, sockets) or infinite loops.
 
-### The Solution: Cortensor Task Sentinel
-Built with the official **OpenMinion 0.1 Python SDK** (`openminion.Agent` and `@tool`), **Task Sentinel** delivers sub-millisecond, deterministic verification for Cortensor Subnet nodes:
-1. **Zero-Token AST Safety Engine**: Pre-execution static analysis inspects source proposals in under 0.5 ms, intercepting forbidden system calls (`os.system`, `subprocess`, `eval`) and infinite CPU loops before execution.
-2. **Deterministic Correctness Execution**: Executes verified functions against deterministic input-output suites with hard CPU budget timeouts.
-3. **Epoch-Fenced Cryptographic Receipts**: Generates HMAC-SHA256 attestation receipts committed to the subnet mempool.
-4. **Hosted Portal Adapter**: Supports hosted Cortensor API routing (`CORTENSOR_API_KEY`) with automatic local AST fallback.
+### How it works
+I built Cortensor Task Sentinel with the OpenMinion 0.1 Python SDK (`openminion.Agent` and `@tool`). It runs fast, deterministic checks before or alongside any model call:
 
-### Upstream OpenMinion Contributions (Issue #733 & Fix PR #734)
-As part of our evaluation of the OpenMinion 0.1 SDK, we diagnosed and filed the circular import defect between `openminion.modules.tool.executor` and `ToolExecutionBatch` ([Issue #733](https://github.com/openminion/openminion/issues/733)) and immediately opened the upstream fix ([PR #734](https://github.com/openminion/openminion/pull/734), resolving `#733`, passing all 559 upstream tests and whole-tree typing gates). We also authored a comprehensive 7-page developer feedback report ([`docs/cortensor_openminion_feedback_report.md`](docs/cortensor_openminion_feedback_report.md)) detailing SDK developer experience, serialization ergonomics, and AST hook recommendations.
+1. `audit_code_safety`: walks the Python AST in under 0.2 ms with no LLM tokens and blocks forbidden modules (`os`, `sys`, `subprocess`, `socket`), dangerous builtins (`eval`, `exec`, `open`, `__import__`, `getattr`), and dunder sandbox escapes (`__class__`, `__subclasses__`, `__globals__`).
+2. `execute_test_case`: runs code that passed the audit against test inputs in a restricted builtins namespace with a `signal.setitimer` timeout.
+3. `verify_via_hosted_portal`: uses the hosted Cortensor API when `CORTENSOR_API_KEY` is set and falls back to local verification otherwise.
+4. `create_attestation_receipt`: signs each outcome with an epoch-fenced HMAC-SHA256 signature and can print it as JSON (`--json`).
 
-### Key Performance Metrics
-- **Verification Cycle Latency**: < 0.2 ms AST inspection time (< 0.9 ms total execution)
-- **LLM Token Overhead**: 0 tokens burned for deterministic verification
-- **Unit Test Pass Rate**: 17/17 unit tests passing in 1.74s (including adversarial sandbox escape suites)
-- **Economic ROI**: Eliminates $2,000 – $5,000/day in cloud token expenses per 100k tasks verified
-- **Codebase Simplicity**: KISS Grade A+ (15 clean files, 2 runtime dependencies)
+### OpenMinion 0.1 SDK building blocks I tested
+- `@tool` registration from type hints and docstrings (worked well): no hand-written JSON schemas, and agent startup stayed under 100 ms.
+- `Agent` configuration and custom endpoints (worked well): instructions, tools, and local or hosted model endpoints were simple to wire up.
+- Tool return serialization (rough edge): returning `@dataclass(slots=True)` objects (`SafetyCheckResult`, `AttestationReceipt`) from `@tool` functions failed coercion, so I added `dict[str, Any]` adapters.
+- Headless dependencies (rough edge): `openminion==0.1.20` installs terminal and desktop packages (`prompt-toolkit`, `send2trash`, `wcwidth`, `sophiagraph`) on headless Linux nodes.
+- Circular import in `openminion.modules.tool.executor` (bug I found and fixed upstream): importing `ToolExecutionBatch` from `openminion.modules.tool.executor` failed with an `ImportError` because of a module-level circular import with `openminion.modules.tool.registry`.
 
-### How to Verify in 60 Seconds
+### SDK feedback and recommendations
+Full report: `docs/cortensor_openminion_feedback_report.md`
+
+- Add an optional `pre_turn_verifier` hook on `Agent` so a deterministic check can reject bad input before any model call.
+- Convert `@dataclass` (`asdict()`) and Pydantic (`model_dump()`) return values automatically in the `@tool` dispatcher.
+- Offer optional HMAC-SHA256 or Ed25519 signing hooks for tool execution receipts.
+- Split `openminion-core` (headless agent and tool runtime) from `openminion-cli` (terminal dependencies).
+
+### Upstream OpenMinion contributions
+- Bug report: [openminion/openminion#733](https://github.com/openminion/openminion/issues/733), a circular import between `openminion.modules.tool.executor` and `modules.tool.registry`.
+- Fix PR: [openminion/openminion#734](https://github.com/openminion/openminion/pull/734), which defers the `ToolSpec` import in `executor.py` and adds an isolated-import regression test. All 559 upstream tests and type checks pass.
+
+### Verification
+- The AST safety check runs in under 0.2 ms with no LLM tokens. The full CLI demo cycle takes about 0.4 ms on my machine.
+- 17 of 17 unit tests pass in under 2 seconds (`tests/test_validator.py`). They cover clean code, blocked imports and builtins, `getattr` evasion, dunder attribute escapes, timeout enforcement, HMAC tamper detection, `--json` CLI receipts, and hosted portal fallback.
+
 ```bash
 git clone https://github.com/manderson240/cortensor-subnet-validator.git
 cd cortensor-subnet-validator
-uv run pytest     # Runs 17/17 unit tests in < 2 seconds
-uv run sentinel   # Runs full end-to-end verification demo in < 1 ms!
-```
+uv run pytest
+uv run sentinel
 ```
 
+---
 
-### Formal Verification & Invariant Proofs
-- **Auditing Harness**: Google Research / Stellar Colosseum Many-Agent Harness (arXiv:2609.15983).
-- **Systemic Coherence ($C_{systemic}$)**: `0.9586` (Pass threshold: $\ge 0.80$).
-- **Formally Verified Lemmas**: `4 / 4` protocol invariants mathematically proven.
-- **Adversarial Resilience**: Passed 100% of boundary condition, zero-division, and reentrancy falsification loops.
-- **Proof Certificate**: Comprehensive mathematical certificate published in [STELLAR_INVARIANT_PROOF.md](STELLAR_INVARIANT_PROOF.md).
+## Architecture diagrams
+
+See [README.md](README.md#architecture) for the flowchart, sequence diagram, and state diagram.

@@ -7,7 +7,7 @@ Features:
 - Exact word-for-word voiceover synchronization with on-screen slide text.
 - Full viewport visibility: zero text clipping or bottom cutoff (87px decoration compensation + cropping).
 - Authentic Linux terminal interface using dynamic environment paths (${CORTENSOR_HOME}, validator@node-01).
-- 100% complete source code visibility — ZERO abbreviations, ZERO ellipses (...), ZERO clipping.
+- 100% complete source code visibility: ZERO abbreviations, ZERO ellipses (...), ZERO clipping.
 - Displays both the OpenMinion 0.1 Agent tools (openminion_agent.py) and AST verifier (verifier.py).
 - CPU execution timeout defense, live Cortensor API integration, and JSON receipt generation in test suite (17/17 passing).
 - Local Kyutai Pocket-TTS natural neural speech synthesis with int8 quantization (zero OOM risk, offline CPU).
@@ -139,8 +139,8 @@ SCENES = [
                     <div class="card-icon">❌</div>
                     <h3>The Cloud LLM Bottleneck</h3>
                     <ul>
-                        <li><strong>1,500 – 3,000 ms</strong> latency per verification</li>
-                        <li><strong>Token cost:</strong> $0.02 – $0.05 per task check</li>
+                        <li><strong>1,500 to 3,000 ms</strong> latency per verification</li>
+                        <li><strong>Token cost:</strong> $0.02 to $0.05 per task check</li>
                         <li><strong>Vulnerability:</strong> LLM prompt injection & non-determinism</li>
                         <li><strong>Fragile:</strong> Fails when cloud providers throttle APIs</li>
                     </ul>
@@ -175,13 +175,13 @@ SCENES = [
             <div class="header">
                 <span class="badge">Actual Source Code • src/cortensor_validator/openminion_agent.py</span>
                 <h1>OpenMinion 0.1 SDK Tool Integration</h1>
-                <p class="subtitle">Complete implementation of native @tool functions registered directly into openminion.Agent — zero omissions.</p>
+                <p class="subtitle">Complete implementation of native @tool functions registered directly into openminion.Agent: zero omissions.</p>
             </div>
             <div class="code-grid-2">
                 <div class="code-box">
                     <div class="linux-bar">
                         <div class="linux-title"><span class="linux-tab">openminion_agent.py (Audit & Builtins)</span></div>
-                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                        <div class="linux-controls"><span>-</span><span>□</span><span>✕</span></div>
                     </div>
                     <pre><code><span class="k">from</span> openminion <span class="k">import</span> Agent, tool
 <span class="k">from</span> cortensor_validator.verifier <span class="k">import</span> verify_code_safety
@@ -224,7 +224,7 @@ SAFE_BUILTINS = {
                 <div class="code-box">
                     <div class="linux-bar">
                         <div class="linux-title"><span class="linux-tab">openminion_agent.py (Sandbox & Agent)</span></div>
-                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                        <div class="linux-controls"><span>-</span><span>□</span><span>✕</span></div>
                     </div>
                     <pre><code><span class="dec">@tool</span>
 <span class="k">def</span> <span class="fn">execute_test_case</span>(code: <span class="nb">str</span>, test_input: <span class="nb">int</span>, expected: <span class="nb">int</span>) -> <span class="nb">dict</span>:
@@ -280,7 +280,7 @@ SAFE_BUILTINS = {
                 <div class="code-box">
                     <div class="linux-bar">
                         <div class="linux-title"><span class="linux-tab">verifier.py (Forbidden Primitives)</span></div>
-                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                        <div class="linux-controls"><span>-</span><span>□</span><span>✕</span></div>
                     </div>
                     <pre><code><span class="k">import</span> ast
 <span class="k">import</span> time
@@ -310,7 +310,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                 <div class="code-box">
                     <div class="linux-bar">
                         <div class="linux-title"><span class="linux-tab">verifier.py (AST Inspection Engine)</span></div>
-                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                        <div class="linux-controls"><span>-</span><span>□</span><span>✕</span></div>
                     </div>
                     <pre><code><span class="k">def</span> <span class="fn">verify_code_safety</span>(code_str: <span class="nb">str</span>) -> SafetyCheckResult:
     <span class="str">\"\"\"Inspect Python code for unsafe primitives via AST.\"\"\"</span>
@@ -370,7 +370,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                 <div class="code-box">
                     <div class="linux-bar">
                         <div class="linux-title"><span class="linux-tab">submission_fibonacci.py</span></div>
-                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                        <div class="linux-controls"><span>-</span><span>□</span><span>✕</span></div>
                     </div>
                     <pre><code><span class="k">def</span> <span class="fn">solution</span>(n: <span class="nb">int</span>) -> <span class="nb">int</span>:
     <span class="str">\"\"\"Calculate n-th Fibonacci number iteratively.\"\"\"</span>
@@ -387,7 +387,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                 <div class="terminal-mini">
                     <div class="linux-bar">
                         <div class="linux-title">{VALIDATOR_NODE_DISPLAY}: {PROJECT_ROOT_DISPLAY}</div>
-                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                        <div class="linux-controls"><span>-</span><span>□</span><span>✕</span></div>
                     </div>
                     <div class="term-lines">
                         <p class="t-line"><span class="t-prompt">{VALIDATOR_NODE_DISPLAY}:{PROJECT_ROOT_DISPLAY}$</span> uv run sentinel</p>
@@ -398,7 +398,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                         <p class="t-line t-indent"><span class="t-green">✓ Output:</span> 55 == Expected 55 (MATCH)</p>
                         <p class="t-line"><span class="t-yellow">↳ tool:</span> create_attestation_receipt(passed=True)</p>
                         <p class="t-line t-indent"><span class="t-green">✓ Sig:</span> 9471e5d98f3ad62657aca62f...</p>
-                        <p class="t-banner-pass">STATUS: CERTIFIED — 100% Deterministic (0.3ms)</p>
+                        <p class="t-banner-pass">STATUS: CERTIFIED: 100% Deterministic (0.3ms)</p>
                     </div>
                 </div>
             </div>
@@ -428,7 +428,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                 <div class="code-box danger-border">
                     <div class="linux-bar danger-header">
                         <div class="linux-title" style="color: #ef4444;"><span class="linux-tab-danger">exploit_attempt.py</span></div>
-                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                        <div class="linux-controls"><span>-</span><span>□</span><span>✕</span></div>
                     </div>
                     <pre><code><span class="k" style="color: #ef4444; font-weight: bold;">import</span> os  <span class="comment"># &lt;-- FORBIDDEN PRIMITIVE!</span>
 
@@ -445,7 +445,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                 <div class="terminal-mini">
                     <div class="linux-bar">
                         <div class="linux-title">{VALIDATOR_NODE_DISPLAY}: {PROJECT_ROOT_DISPLAY}</div>
-                        <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                        <div class="linux-controls"><span>-</span><span>□</span><span>✕</span></div>
                     </div>
                     <div class="term-lines">
                         <p class="t-line"><span class="t-prompt">{VALIDATOR_NODE_DISPLAY}:{PROJECT_ROOT_DISPLAY}$</span> uv run sentinel</p>
@@ -456,7 +456,7 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
                         <p class="t-line"><span class="t-yellow">↳ tool:</span> execute_test_case(...) -> <span class="t-red">PREVENTED</span></p>
                         <p class="t-line"><span class="t-yellow">↳ tool:</span> create_attestation_receipt(passed=False)</p>
                         <p class="t-line t-indent"><span class="t-red">✗ Sig:</span> d464efec11eed9adbf7b7a7f...</p>
-                        <p class="t-banner-fail">STATUS: REJECTED — Subnet Protected (0.1ms)</p>
+                        <p class="t-banner-fail">STATUS: REJECTED: Subnet Protected (0.1ms)</p>
                     </div>
                 </div>
             </div>
@@ -485,29 +485,29 @@ FORBIDDEN_MODULES = <span class="nb">frozenset</span>({
             <div class="terminal-window">
                 <div class="linux-bar">
                     <div class="linux-title">{VALIDATOR_NODE_DISPLAY}: {PROJECT_ROOT_DISPLAY}</div>
-                    <div class="linux-controls"><span>—</span><span>□</span><span>✕</span></div>
+                    <div class="linux-controls"><span>-</span><span>□</span><span>✕</span></div>
                 </div>
                 <div class="terminal-content">
                     <p class="cmd"><span class="t-prompt">{VALIDATOR_NODE_DISPLAY}:{PROJECT_ROOT_DISPLAY}$</span> uv run pytest tests/ -v</p>
                     <p class="dim">rootdir: {PROJECT_ROOT_DISPLAY}</p>
                     <p class="dim">plugins: asyncio-1.4.1, anyio-4.16.0, platformdirs-4.14.5, cov-7.1.0</p>
-                    <p><span class="pass">PASSED</span> test_code_safety_accepts_clean_code <span class="dim">— verifies valid pure logic passes AST</span></p>
-                    <p><span class="pass">PASSED</span> test_code_safety_rejects_forbidden_imports <span class="dim">— catches 'os', 'sys', 'socket', 'subprocess'</span></p>
-                    <p><span class="pass">PASSED</span> test_code_safety_rejects_forbidden_builtins <span class="dim">— catches 'eval()', 'exec()', 'open()'</span></p>
-                    <p><span class="pass">PASSED</span> test_code_safety_rejects_obfuscated_dynamic_imports <span class="dim">— blocks getattr / __import__ stealth execution</span></p>
-                    <p><span class="pass">PASSED</span> test_code_safety_rejects_sandbox_breakout_attributes <span class="dim">— blocks __subclasses__ / __globals__ introspection</span></p>
-                    <p><span class="pass">PASSED</span> test_code_safety_rejects_syntax_errors <span class="dim">— catches malformed submissions</span></p>
-                    <p><span class="pass">PASSED</span> test_attestation_signing_and_verification <span class="dim">— checks valid HMAC signature generation</span></p>
-                    <p><span class="pass">PASSED</span> test_openminion_tool_audit_safety <span class="dim">— verifies @tool safety audit functionality</span></p>
-                    <p><span class="pass">PASSED</span> test_openminion_tool_execute_test_case <span class="dim">— checks sandboxed safe execution</span></p>
-                    <p><span class="pass">PASSED</span> test_openminion_agent_instantiation <span class="dim">— verifies OpenMinion 0.1 agent creation</span></p>
-                    <p><span class="pass">PASSED</span> test_sentinel_end_to_end_verification <span class="dim">— validates full pipeline from input to receipt</span></p>
-                    <p><span class="pass">PASSED</span> test_environment_variable_configuration <span class="dim">— tests dynamic CORTENSOR_VALIDATOR_ID and EPOCH</span></p>
-                    <p><span class="pass">PASSED</span> test_cli_verify_file <span class="dim">— tests dynamic file-based verification via CLI flags</span></p>
-                    <p><span class="pass">PASSED</span> test_execute_test_case_timeout <span class="dim">— blocks infinite loop / CPU recursion DoS attacks</span></p>
-                    <p><span class="pass">PASSED</span> test_cli_verify_file_json <span class="dim">— outputs machine-readable JSON attestation receipt</span></p>
-                    <p><span class="pass">PASSED</span> test_query_hosted_portal_without_key <span class="dim">— validates fallback when no API key configured</span></p>
-                    <p><span class="pass">PASSED</span> test_query_hosted_portal_mock_connected <span class="dim">— tests live Cortensor hosted API gateway (api.cortensor.app)</span></p>
+                    <p><span class="pass">PASSED</span> test_code_safety_accepts_clean_code <span class="dim">- verifies valid pure logic passes AST</span></p>
+                    <p><span class="pass">PASSED</span> test_code_safety_rejects_forbidden_imports <span class="dim">- catches 'os', 'sys', 'socket', 'subprocess'</span></p>
+                    <p><span class="pass">PASSED</span> test_code_safety_rejects_forbidden_builtins <span class="dim">- catches 'eval()', 'exec()', 'open()'</span></p>
+                    <p><span class="pass">PASSED</span> test_code_safety_rejects_obfuscated_dynamic_imports <span class="dim">- blocks getattr / __import__ stealth execution</span></p>
+                    <p><span class="pass">PASSED</span> test_code_safety_rejects_sandbox_breakout_attributes <span class="dim">- blocks __subclasses__ / __globals__ introspection</span></p>
+                    <p><span class="pass">PASSED</span> test_code_safety_rejects_syntax_errors <span class="dim">- catches malformed submissions</span></p>
+                    <p><span class="pass">PASSED</span> test_attestation_signing_and_verification <span class="dim">- checks valid HMAC signature generation</span></p>
+                    <p><span class="pass">PASSED</span> test_openminion_tool_audit_safety <span class="dim">- verifies @tool safety audit functionality</span></p>
+                    <p><span class="pass">PASSED</span> test_openminion_tool_execute_test_case <span class="dim">- checks sandboxed safe execution</span></p>
+                    <p><span class="pass">PASSED</span> test_openminion_agent_instantiation <span class="dim">- verifies OpenMinion 0.1 agent creation</span></p>
+                    <p><span class="pass">PASSED</span> test_sentinel_end_to_end_verification <span class="dim">- validates full pipeline from input to receipt</span></p>
+                    <p><span class="pass">PASSED</span> test_environment_variable_configuration <span class="dim">- tests dynamic CORTENSOR_VALIDATOR_ID and EPOCH</span></p>
+                    <p><span class="pass">PASSED</span> test_cli_verify_file <span class="dim">- tests dynamic file-based verification via CLI flags</span></p>
+                    <p><span class="pass">PASSED</span> test_execute_test_case_timeout <span class="dim">- blocks infinite loop / CPU recursion DoS attacks</span></p>
+                    <p><span class="pass">PASSED</span> test_cli_verify_file_json <span class="dim">- outputs machine-readable JSON attestation receipt</span></p>
+                    <p><span class="pass">PASSED</span> test_query_hosted_portal_without_key <span class="dim">- validates fallback when no API key configured</span></p>
+                    <p><span class="pass">PASSED</span> test_query_hosted_portal_mock_connected <span class="dim">- tests live Cortensor hosted API gateway (api.cortensor.app)</span></p>
                     <p class="success-banner">============================== 17 passed in 1.65s ==============================</p>
                 </div>
             </div>

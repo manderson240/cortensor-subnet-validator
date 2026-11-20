@@ -28,7 +28,7 @@ def run_demo(verbose: bool = True, use_hosted: bool = False) -> int:
     if verbose:
         print("=" * 68)
         print("  CORTENSOR TASK SENTINEL (OpenMinion 0.1 SDK)")
-        print("  DoraHacks Hackathon #5 — Subnet Task Verification Agent")
+        print("  DoraHacks Hackathon #5: Subnet Task Verification Agent")
         print("=" * 68)
 
     sentinel = CortensorSentinel(validator_id=validator_id)
@@ -65,10 +65,10 @@ def run_demo(verbose: bool = True, use_hosted: bool = False) -> int:
     )
 
     if verbose:
-        print(f"    ✓ Safety Audit:      PASSED (0 forbidden calls)")
-        print(f"    ✓ Correctness Test:  PASSED (solution(10) == 55) [{sentinel.last_mode}]")
-        print(f"    ✓ Attestation Sig:   {receipt.signature[:24]}...")
-        print(f"    ✓ Verified Status:   {'CERTIFIED' if passed else 'REJECTED'}")
+        print(f"    [OK] Safety Audit:      PASSED (0 forbidden calls)")
+        print(f"    [OK] Correctness Test:  PASSED (solution(10) == 55) [{sentinel.last_mode}]")
+        print(f"    [OK] Attestation Sig:   {receipt.signature[:24]}...")
+        print(f"    [OK] Verified Status:   {'CERTIFIED' if passed else 'REJECTED'}")
 
     # Case B: Malicious Miner Submission
     malicious_task_id = "task-exploit-attempt"
@@ -93,17 +93,16 @@ def run_demo(verbose: bool = True, use_hosted: bool = False) -> int:
     )
 
     if verbose:
-        print(f"    ✓ Safety Audit:      BLOCKED (Forbidden import 'os' detected)")
-        print(f"    ✓ Execution:         PREVENTED (0 compute burned)")
-        print(f"    ✓ Attestation Sig:   {mal_receipt.signature[:24]}...")
-        print(f"    ✓ Verified Status:   {'CERTIFIED' if mal_passed else 'REJECTED'}")
+        print(f"    [OK] Safety Audit:      BLOCKED (Forbidden import 'os' detected)")
+        print(f"    [OK] Execution:         PREVENTED (code never ran)")
+        print(f"    [OK] Attestation Sig:   {mal_receipt.signature[:24]}...")
+        print(f"    [OK] Verified Status:   {'CERTIFIED' if mal_passed else 'REJECTED'}")
 
     total_ms = (time.perf_counter() - t0) * 1000.0
 
     if verbose:
         print("\n" + "=" * 68)
-        print(f"  SENTINEL COMPLETE — ALL CHECKS PASSED in {total_ms:.1f}ms")
-        print("  Status: READY FOR CORTENSOR SUBNET PRODUCTION")
+        print(f"  SENTINEL COMPLETE: ALL CHECKS PASSED in {total_ms:.1f}ms")
         print("=" * 68 + "\n")
 
     return 0
