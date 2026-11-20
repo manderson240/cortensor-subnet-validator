@@ -1,5 +1,8 @@
 # Cortensor Task Sentinel
 
+<p align="center">
+  <img src="docs/cortensor_task_sentinel_logo.png" alt="Cortensor Task Sentinel Logo" width="160" />
+</p>
 
 ---
 

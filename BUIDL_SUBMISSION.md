@@ -26,6 +26,7 @@ OpenMinion 0.1 Python SDK / Subnet Task Verification Track
 
 ### 4. Project Links
 - **GitHub Repository**: `https://github.com/manderson240/cortensor-subnet-validator`
+- **Build Logo (1024x1024 PNG)**: Located at `docs/cortensor_task_sentinel_logo.png` in repository
 - **Demo Video (2K QHD)**: Located at `docs/cortensor_pitch_demo.mp4` in repository (upload to YouTube/Loom as unlisted/public if URL required)
 - **Developer Feedback Report**: `https://github.com/manderson240/cortensor-subnet-validator/blob/main/docs/cortensor_openminion_feedback_report.md`
 - **Upstream Bug Report**: `https://github.com/openminion/openminion/issues/733`
