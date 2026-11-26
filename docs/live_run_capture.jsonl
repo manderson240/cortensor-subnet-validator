@@ -1,0 +1,42 @@
+{"header": {"recorded_at": "2026-11-24T16:21:32+00:00", "provider": "portal", "model": "oss-20b", "base_url": "https://api.cortensor.app/v1", "commands": ["uv run pytest -q", "uv run sentinel --live --provider portal"], "exit_codes": [0, 0]}}
+{"t": 0.0, "kind": "cmd", "text": "uv run pytest -q"}
+{"t": 1.881, "kind": "out", "text": ".......................                                                  [100%]"}
+{"t": 1.881, "kind": "out", "text": "23 passed in 1.70s"}
+{"t": 2.774, "kind": "exit", "text": "0"}
+{"t": 2.774, "kind": "cmd", "text": "uv run sentinel --live --provider portal"}
+{"t": 3.985, "kind": "out", "text": "===================================================================="}
+{"t": 3.985, "kind": "out", "text": "  CORTENSOR TASK SENTINEL, live model run (OpenMinion 0.1 SDK)"}
+{"t": 3.985, "kind": "out", "text": "  provider=portal  model=oss-20b  base_url=https://api.cortensor.app/v1"}
+{"t": 4.464, "kind": "out", "text": "  portal     connected=True  models=['gemma4', 'oss-120b', 'oss-20b', 'qwen']"}
+{"t": 4.464, "kind": "out", "text": "===================================================================="}
+{"t": 4.464, "kind": "out", "text": ""}
+{"t": 4.464, "kind": "out", "text": ">>> task-fibonacci-10: asking the model to verify it"}
+{"t": 218.507, "kind": "out", "text": "    [+214.0s] live tool  audit_code_safety -> {\"valid\": true, \"violations\": [], \"latency_ms\": 0.134}"}
+{"t": 285.873, "kind": "out", "text": "    [+281.4s] live tool  execute_test_case -> {\"passed\": true, \"actual_output\": 55, \"latency_ms\": 0.079}"}
+{"t": 373.212, "kind": "out", "text": "    [+368.7s] live tool  create_attestation_receipt -> {\"passed\": true, \"signature\": \"fa9ba2824c2ab60e...\"}"}
+{"t": 727.03, "kind": "out", "text": "    tool call  audit_code_safety: {\"valid\": true, \"violations\": [], \"latency_ms\": 0.134}"}
+{"t": 727.03, "kind": "out", "text": "    tool call  execute_test_case: {\"passed\": true, \"actual_output\": 55, \"latency_ms\": 0.079}"}
+{"t": 727.03, "kind": "out", "text": "    tool call  create_attestation_receipt: {\"passed\": true, \"signature\": \"fa9ba2824c2ab60e...\"}"}
+{"t": 727.03, "kind": "out", "text": "    model says sentinel: The code passes the test: solution(10) returns 55 as required."}
+{"t": 727.03, "kind": "out", "text": "    verdict    CERTIFIED (test passed (output 55))"}
+{"t": 727.03, "kind": "out", "text": "    receipt    8390584a2b0a483d28f11645..."}
+{"t": 727.03, "kind": "out", "text": "    cost       6 LLM calls {'act': 5, 'entry': 1}, 19253 in / 1760 out tokens, 722.6s"}
+{"t": 727.03, "kind": "out", "text": ""}
+{"t": 727.03, "kind": "out", "text": ">>> task-exploit-attempt: asking the model to verify it"}
+{"t": 953.692, "kind": "out", "text": "    [+226.7s] live tool  audit_code_safety -> {\"valid\": false, \"violations\": [\"Forbidden import: 'os'\"], \"latency_ms\": 0.098}"}
+{"t": 1003.812, "kind": "out", "text": "    [+276.8s] live tool  execute_test_case -> {\"passed\": false, \"error\": \"Safety check failed; execution blocked.\", \"violations\": [\"Forbidden import: 'os'\"]}"}
+{"t": 1064.736, "kind": "out", "text": "    [+337.7s] live tool  create_attestation_receipt -> {\"passed\": false, \"signature\": \"e80cc1fabba7d5e3...\"}"}
+{"t": 1378.632, "kind": "out", "text": "    tool call  audit_code_safety: {\"valid\": false, \"violations\": [\"Forbidden import: 'os'\"], \"latency_ms\": 0.098}"}
+{"t": 1378.632, "kind": "out", "text": "    tool call  execute_test_case: {\"passed\": false, \"error\": \"Safety check failed; execution blocked.\", \"violations\": [\"Forbidden import: 'os'\"]}"}
+{"t": 1378.632, "kind": "out", "text": "    tool call  create_attestation_receipt: {\"passed\": false, \"signature\": \"e80cc1fabba7d5e3...\"}"}
+{"t": 1378.632, "kind": "out", "text": "    model says sentinel: The code fails safety inspection: the import of\u202f`os` is forbidden, so the test cannot be executed."}
+{"t": 1378.632, "kind": "out", "text": "Verdict: **FAIL** \u2013 the test did not pass due to a security violation."}
+{"t": 1378.632, "kind": "out", "text": "    verdict    REJECTED (audit blocked: Forbidden import: 'os')"}
+{"t": 1378.632, "kind": "out", "text": "    receipt    a64f49e8246a0ff8512bdfc8..."}
+{"t": 1378.632, "kind": "out", "text": "    cost       5 LLM calls {'act': 4, 'entry': 1}, 15998 in / 1711 out tokens, 651.6s"}
+{"t": 1378.632, "kind": "out", "text": ""}
+{"t": 1378.632, "kind": "out", "text": "===================================================================="}
+{"t": 1378.632, "kind": "out", "text": "  LIVE RUN COMPLETE: both tasks verified by the agent"}
+{"t": 1378.632, "kind": "out", "text": "===================================================================="}
+{"t": 1378.632, "kind": "out", "text": ""}
+{"t": 1379.446, "kind": "exit", "text": "0"}
