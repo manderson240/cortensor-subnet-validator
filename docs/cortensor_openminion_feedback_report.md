@@ -125,9 +125,11 @@ the submitted code, not from the model's reply.
   `registry/__init__.py` imports names back from `executor.py`. Confirmed still present on PyPI `openminion==0.1.24`.
 - Bug report: [openminion/openminion#733](https://github.com/openminion/openminion/issues/733)
 - Fix PR: [openminion/openminion#734](https://github.com/openminion/openminion/pull/734). It defers the
-  `ToolSpec` import and adds an isolated-import regression test (rebased onto `dev` `4bdc03a5`
-  at `08e7b26f`, addressing maintainer readability and `CHANGELOG.md` `Unreleased` review
-  feedback. 559 critical-path tests, ruff, and mypy type checks pass with it).
+  `ToolSpec` import and adds an isolated-import regression test (rebased onto `dev` `0c99b454`
+  at `d8162d73`, addressing maintainer readability and `CHANGELOG.md` `Unreleased` review
+  feedback. 561 critical-path tests, ruff, and mypy type checks pass with it).
+- The maintainer accepted the source fix on 2026-11-26 after independent review. The PR now waits on
+  their hosted macOS checks, and #733 stays open until a published release carries the fix.
 
 ### K. OpenMinion 0.1.24 Re-Verification (2026-11-24 UTC)
 - Upgraded `pyproject.toml` and `uv.lock` to PyPI `openminion==0.1.24`. All 21 offline tests in `tests/test_validator.py` pass unchanged.
